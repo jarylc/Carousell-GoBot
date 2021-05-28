@@ -45,23 +45,21 @@ func TestReminders(t *testing.T) {
 		t.Errorf("%d vs 2", len(reminders))
 	}
 
-	// TODO: FIX ASSERTIONS
-	// assertions
-	var i = 0
-	for reminderTime, reminders := range reminders {
-		// check first set of reminders have 2 reminders
-		if i == 0 && len(reminders) != 2 {
-			t.Errorf("%d vs 2", len(reminders))
-		}
-		// check reminder time
-		id, err := strconv.Atoi(reminders[0].ID)
-		if err != nil {
-			t.Error(err)
-		}
-		reminderTimeRight := now.Add(time.Hour * time.Duration(2+((id-1)*3)))
-		if !reminderTime.Equal(reminderTimeRight) {
-			t.Errorf("%s vs %s", reminderTime.String(), reminderTimeRight.String())
-		}
-		i++
+	// check 2 hours later should have 2 reminders
+	three, ok := reminders[now.Add(time.Hour*2)]
+	if !ok {
+		t.Errorf("missing 2 hours later reminder")
+	}
+	if len(three) != 2 {
+		t.Errorf("%d vs 2", len(three))
+	}
+
+	// check 5 hours later should have 1 reminders
+	six, ok := reminders[now.Add(time.Hour*5)]
+	if !ok {
+		t.Errorf("missing 5 hours later reminder")
+	}
+	if len(six) != 1 {
+		t.Errorf("%d vs 1", len(six))
 	}
 }
