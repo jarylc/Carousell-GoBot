@@ -1,0 +1,16 @@
+.idea
+.git
+.gitignore
+
+*.iml
+
+*.md
+carousell-gobot.png
+readme
+LICENSE
+
+config.json
+state.json
+config.sample.yaml
+
+**/node_modules

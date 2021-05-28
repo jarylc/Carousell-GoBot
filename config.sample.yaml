@@ -1,0 +1,73 @@
+carousell:
+  # entire Cookie header from https://carousell.sg
+  cookie: _t2=..._t=...auth-session=...
+  # interval to ping Carousell to check connectivity
+  ping_interval: 300
+  # percentage of price to be considered low-ball in decimal notation
+  low_ball: 0.7
+message_templates: # message templates
+  faq: |- # frequently answered questions (optional, leave empty if not required)
+    FAQ:
+    » Where do I normally deal?
+    Anywhere
+
+    » What payment methods do I accept?
+    In order of preference: Google Pay, PayLah, PayNow, Cash, CarouPay, Bank Transfer
+
+    » Why I might not have replied your message?
+    Very likely you offered too low-ball of a price, please raise your offer
+  initial: |- # new chat initial greeting
+    Hello @{{NAME}}!
+
+    Thanks for your interest in my item {{ITEM}}
+
+    Do take a look at the FAQ sent above if you have any questions
+
+    I will try to get back to you in person as soon as possible!
+  offered: |- # official offer using Carousell's offer button
+    Thank you for your offer of ${{OFFER}}!
+  possible_offer: |- # offer value detected from previously sent message
+    It looks like you are making an offer of ${{OFFER}}.
+
+    I will recommended to use Carousell's MAKE OFFER button for a faster response.
+  lower_offer: |- # official offer value was decreased from possible offer, buyer being cheeky?
+    WARNING: Offer was lowered!
+  low_balled: |- # low-balled
+    WARNING: Your offer is {{PERCENT}}% below listing price, it''s pretty low!
+  reminder: |- # reminder
+    REMINDER: We are dealing this in {{HOURS}} hour(s)!
+reminders: # list of hours to set reminders for on every deal (optional, leave empty if none)
+  - 1
+  - 4
+  - 24
+# prefix to use for the app to detect as a command
+command_prefix: "."
+# number of days to keep items in state after last activity
+state_prune: 14
+forwarders: # list of forwarders (optional, leave empty if none)
+  - type: telegram
+    token: 1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234 # bot token
+    chat_id: '87654321' # chat id
+    message_templates:
+      standard: |- # standard message
+        *Carousell Chat/Offer*
+        [{{NAME}} - {{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+        ${{OFFER}}
+        {{FLAGS}}
+      reminder: |- # reminder message
+        *Carousell Deal Reminder*
+        [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+        Deal ${{OFFER}} in {{HOURS}} hour(s)!
+  - type: telegram
+    token: 1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234
+    chat_id: '12345678'
+    message_templates:
+      standard: |-
+        *Carousell Chat/Offer*
+        [{{NAME}} - {{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+        ${{OFFER}}
+        {{FLAGS}}
+      reminder: |-
+        *Carousell Deal Reminder*
+        [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+        Deal ${{OFFER}} in {{HOURS}} hour(s)!

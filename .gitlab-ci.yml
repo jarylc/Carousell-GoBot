@@ -1,0 +1,43 @@
+image: golang:alpine
+
+cache:
+  paths:
+    - /go/src/
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  only:
+    - pushes
+    - master
+  script:
+    - ./ci-build.sh
+    - CGO_ENABLED=0 go test ./...
+  artifacts:
+    paths:
+      - '*.windows-*'
+      - '*-linux-*'
+
+deploy-nightly:
+  stage: deploy
+  only:
+    - develop:stable
+  image: docker
+  services:
+    - name: docker:stable-dind
+      command: [ "--experimental" ]
+  script:
+    - ./ci-deploy.sh nightly
+
+deploy-latest:
+  stage: deploy
+  only:
+    - master
+  image: docker:stable
+  services:
+    - name: docker:stable-dind
+      command: [ "--experimental" ]
+  script:
+    - ./ci-deploy.sh latest

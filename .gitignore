@@ -1,0 +1,6 @@
+.idea
+**/node_modules
+
+carousell-gobot
+config.yaml
+state.json

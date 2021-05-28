@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "browserify": "=17.0.0",
+    "chrono-node": "=1.4.8"
+  }
+}
