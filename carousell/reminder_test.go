@@ -35,7 +35,6 @@ func TestReminders(t *testing.T) {
 		cState, _ := state.Get(id)
 		cState.ID = id
 		cState.DealOn = now.Add(time.Hour * time.Duration(3*i))
-		time.Sleep(1 * time.Second) // prevent race
 	}
 
 	// init reminders
@@ -46,6 +45,7 @@ func TestReminders(t *testing.T) {
 		t.Errorf("%d vs 2", len(reminders))
 	}
 
+	// TODO: FIX ASSERTIONS
 	// assertions
 	var i = 0
 	for reminderTime, reminders := range reminders {
@@ -54,7 +54,11 @@ func TestReminders(t *testing.T) {
 			t.Errorf("%d vs 2", len(reminders))
 		}
 		// check reminder time
-		reminderTimeRight := now.Add(time.Hour * time.Duration(2+(i*3)))
+		id, err := strconv.Atoi(reminders[0].ID)
+		if err != nil {
+			t.Error(err)
+		}
+		reminderTimeRight := now.Add(time.Hour * time.Duration(2+((id-1)*3)))
 		if !reminderTime.Equal(reminderTimeRight) {
 			t.Errorf("%s vs %s", reminderTime.String(), reminderTimeRight.String())
 		}

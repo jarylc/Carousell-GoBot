@@ -289,7 +289,7 @@ func checkAndSendPriceMessage(info responses.MessageInfo, msg responses.Message,
 	}
 
 	if price <= listedPrice*config.Config.Carousell.LowBall {
-		reply += "\n\n" + strings.ReplaceAll(config.Config.MessageTemplates.LowBalled, "{{PERCENT}}", fmt.Sprintf("%.0f", config.Config.Carousell.LowBall*100))
+		reply += "\n\n" + strings.ReplaceAll(config.Config.MessageTemplates.LowBalled, "{{PERCENT}}", fmt.Sprintf("%.0f", 100-(config.Config.Carousell.LowBall*100)))
 		*flags = append(*flags, constants.LOW_BALL)
 	}
 

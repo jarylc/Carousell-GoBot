@@ -68,8 +68,10 @@ func addReminder(cState *models.State, offsetHours int8) {
 		mutexReminders.Lock()
 		defer mutexReminders.Unlock()
 		for _, cState := range reminders[reminderTime] {
-			hours := int8(math.Round(time.Until(cState.DealOn).Hours()))
-			if sliceContains(config.Config.Reminders, hours) {
+			until := time.Until(cState.DealOn)
+			minute := int8(math.Round(until.Minutes()))
+			if reminderConfigContains(config.Config.Reminders, minute) {
+				hours := int8(math.Round(until.Hours()))
 				message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
 
 				_, err := SendMessage(cState.ID, message)
@@ -94,9 +96,9 @@ func addReminder(cState *models.State, offsetHours int8) {
 }
 
 // utilities
-func sliceContains(s []int8, e int8) bool {
+func reminderConfigContains(s []int8, e int8) bool {
 	for _, a := range s {
-		if a == e {
+		if a*60 == e {
 			return true
 		}
 	}
