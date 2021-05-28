@@ -153,6 +153,6 @@ Distributed under the GNU GENERAL PUBLIC LICENSE V3. See `LICENSE` for more info
 ## Contact
 Jaryl Chng - git@jarylchng.com
 
-https://linkedin.com/in/jarylc
+https://jarylchng.com
 
 Project Link: [https://gitlab.com/jarylc/carousell-gobot/](https://gitlab.com/jarylc/carousell-gobot/)
