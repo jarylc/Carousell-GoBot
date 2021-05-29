@@ -46,22 +46,22 @@ type MessageInfo struct {
 		Status          string      `json:"status"`
 		Vertical        interface{} `json:"vertical"`
 		SmartAttributes struct {
-			BrandEnum       string    `json:"brand_enum"`
-			Caroupay        string    `json:"caroupay"`
-			City            string    `json:"city"`
-			ConditionV2     string    `json:"condition_v2"`
-			CovidMeetupMsg  string    `json:"covid_meetup_msg"`
-			DealOptions     string    `json:"deal_options"`
-			Description     string    `json:"description"`
-			FieldsetID      string    `json:"fieldset_id"`
-			IsFree          string    `json:"is_free"`
-			LastLiked       time.Time `json:"last_liked"`
-			MeetupCount     string    `json:"meetup_count"`
-			MemoryRAM       string    `json:"memory_ram"`
-			MemorySsd       string    `json:"memory_ssd"`
-			ModelNumber     string    `json:"model_number"`
-			MultiQuantities string    `json:"multi_quantities"`
-			Region          string    `json:"region"`
+			BrandEnum       string `json:"brand_enum"`
+			Caroupay        string `json:"caroupay"`
+			City            string `json:"city"`
+			ConditionV2     string `json:"condition_v2"`
+			CovidMeetupMsg  string `json:"covid_meetup_msg"`
+			DealOptions     string `json:"deal_options"`
+			Description     string `json:"description"`
+			FieldsetID      string `json:"fieldset_id"`
+			IsFree          string `json:"is_free"`
+			LastLiked       string `json:"last_liked"`
+			MeetupCount     string `json:"meetup_count"`
+			MemoryRAM       string `json:"memory_ram"`
+			MemorySsd       string `json:"memory_ssd"`
+			ModelNumber     string `json:"model_number"`
+			MultiQuantities string `json:"multi_quantities"`
+			Region          string `json:"region"`
 		} `json:"smart_attributes"`
 		Marketplace struct {
 			ID      int    `json:"id"`

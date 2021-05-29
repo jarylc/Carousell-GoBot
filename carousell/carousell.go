@@ -66,7 +66,6 @@ main:
 				err = handle(message)
 				if err != nil {
 					log.Println(err)
-					break
 				}
 			}
 		}()
