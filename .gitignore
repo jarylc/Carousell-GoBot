@@ -2,5 +2,7 @@
 **/node_modules
 
 carousell-gobot
+
+cfg/
 config.yaml
 state.json

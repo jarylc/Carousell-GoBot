@@ -1,16 +1,26 @@
 .idea
 .git
 .gitignore
+.gitlab
 
 *.iml
 
 *.md
-carousell-gobot.png
-readme
 LICENSE
 
-config.json
+*.png
+*.gif
+*.jpg
+readme/
+
+cfg/
+config.yaml
 state.json
 config.sample.yaml
 
 **/node_modules
+package.json
+package-lock.json
+
+*.sh
+!entrypoint.sh

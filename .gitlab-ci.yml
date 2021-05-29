@@ -37,6 +37,8 @@ deploy-nightly:
   services:
     - name: docker:stable-dind
       command: [ "--experimental" ]
+  before_script:
+    - ./ci-prepare.sh
   script:
     - ./ci-deploy.sh nightly
 
@@ -48,5 +50,7 @@ deploy-latest:
   services:
     - name: docker:stable-dind
       command: [ "--experimental" ]
+  before_script:
+    - ./ci-prepare.sh
   script:
     - ./ci-deploy.sh latest

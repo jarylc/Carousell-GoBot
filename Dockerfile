@@ -1,9 +1,7 @@
 FROM golang:alpine as builder
 WORKDIR /app
 COPY . .
-RUN apk --no-cache add npm go-bindata && \
-    cd chrono && ./prepare.sh && cd .. && \
-    go build -ldflags="-w -s"
+RUN go build -ldflags="-w -s"
 
 FROM alpine
 ENV UID=1000 \
