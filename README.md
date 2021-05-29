@@ -62,8 +62,8 @@ carousell-gobot:
 ### Binaries
 1. [Visit here to view and download the latest build artifacts](https://gitlab.com/jarylc/carousell-gobot/-/jobs/artifacts/master/browse?job=build) / Alternatively, build it yourself with instructions below
 2. [Click here to download the latest sample config](https://gitlab.com/jarylc/carousell-gobot/-/raw/master/config.sample.yaml?inline=false)
-3. Rename `config.sample.json` to `config.yaml`
-4. Edit `config.json` with your configurations (breakdown below)
+3. Rename `config.sample.yaml` to `config.yaml`
+4. Edit `config.yaml` with your configurations (breakdown below)
 5. Run the binary
 > Note: you can also specify path to config using `-c /path/to/config.yaml` and path to state using `-s /path/to/state.json`
 
