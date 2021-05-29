@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -39,13 +40,14 @@ func (m Telegram) SendMessage(text string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
-		return errors.New("telegram returned non-200 status code")
-	}
-
-	_, err = ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
+	}
+
+	if resp.StatusCode != 200 {
+		log.Println(string(body))
+		return errors.New("telegram returned non-200 status code")
 	}
 
 	return nil

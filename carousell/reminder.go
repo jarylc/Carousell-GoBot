@@ -50,7 +50,7 @@ func AddReminders(cState *models.State) {
 
 // TODO: leave review message
 // addReminder - add a single reminder using state and offset
-func addReminder(cState *models.State, offsetHours int8) {
+func addReminder(cState *models.State, offsetHours int16) {
 	mutexReminders.Lock()
 	defer mutexReminders.Unlock()
 

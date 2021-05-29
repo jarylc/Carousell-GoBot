@@ -27,6 +27,11 @@ func LoadForwarders() {
 				ChatID: forwarder.ChatID,
 			}
 			Forwarders = append(Forwarders, telegram)
+		case "discord":
+			discord := Discord{
+				WebhookURL: forwarder.WebhookURL,
+			}
+			Forwarders = append(Forwarders, discord)
 		}
 		log.Printf("\t1x %s loaded\n", forwarder.Type)
 	}

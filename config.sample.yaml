@@ -44,10 +44,10 @@ reminders: # list of hours to set reminders for on every deal (optional, leave e
 command_prefix: "."
 # number of days to keep items in state after last activity
 state_prune: 14
-forwarders: # list of forwarders (optional, leave empty if none)
+forwarders: # list of forwarders (optional, `[]` if none)
   - type: telegram
-    token: 1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234 # bot token
-    chat_id: '87654321' # chat id
+    token: '1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234' # bot token
+    chat_id: 87654321 # chat id
     message_templates:
       standard: |- # standard message
         *Carousell Chat/Offer*
@@ -58,16 +58,15 @@ forwarders: # list of forwarders (optional, leave empty if none)
         *Carousell Deal Reminder*
         [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
         Deal ${{OFFER}} in {{HOURS}} hour(s)!
-  - type: telegram
-    token: 1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234
-    chat_id: '12345678'
+  - type: discord
+    webhook_url: 'https://discord.com/api/webhooks/012345678910111213/lrennsXdocFAKEdOWAkpWEBHOOKMrMMcXa_FcmCURLUMNU_STsnbKVTRirmvLccmvkpA' # webhook url
     message_templates:
-      standard: |-
-        *Carousell Chat/Offer*
+      standard: |- # standard message
+        **Carousell Chat/Offer**
         [{{NAME}} - {{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
         ${{OFFER}}
         {{FLAGS}}
-      reminder: |-
-        *Carousell Deal Reminder*
+      reminder: |- # reminder message
+        **Carousell Reminder**
         [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
         Deal ${{OFFER}} in {{HOURS}} hour(s)!

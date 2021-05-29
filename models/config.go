@@ -15,12 +15,13 @@ type Config struct {
 		LowBalled     string `yaml:"low_balled"`
 		Reminder      string `yaml:"reminder"`
 	} `yaml:"message_templates"`
-	Reminders     []int8 `yaml:"reminders"`
-	CommandPrefix string `yaml:"command_prefix"`
-	StatePrune    int16  `yaml:"state_prune"`
+	Reminders     []int16 `yaml:"reminders"`
+	CommandPrefix string  `yaml:"command_prefix"`
+	StatePrune    int16   `yaml:"state_prune"`
 	Forwarders    []struct {
 		Type             string `yaml:"type"`
 		Token            string `yaml:"token"`
+		WebhookURL       string `yaml:"webhook_url"`
 		ChatID           string `yaml:"chat_id"`
 		MessageTemplates struct {
 			Standard string `yaml:"standard"`
@@ -49,7 +50,7 @@ func DefaultConfig() *Config {
 			LowBalled     string `yaml:"low_balled"`
 			Reminder      string `yaml:"reminder"`
 		}{
-			FAQ:           "I have no FAQ.",
+			FAQ:           "",
 			Initial:       "Hello @{{NAME}}!\n\nThanks for your interest in my item {{ITEM}}!",
 			Offered:       "Thank you for your offer of ${{OFFER}}!",
 			PossibleOffer: "It looks like you are making an offer of ${{OFFER}}.",
@@ -57,7 +58,7 @@ func DefaultConfig() *Config {
 			LowBalled:     "WARNING: Your offer is {{PERCENT}}% below listing price, it's pretty low!",
 			Reminder:      "REMINDER: We are dealing this in {{HOURS}} hour(s)!",
 		},
-		Reminders:     []int8{1, 4, 24},
+		Reminders:     []int16{1, 4, 24},
 		CommandPrefix: ".",
 		StatePrune:    14,
 		Forwarders:    nil,
