@@ -122,8 +122,8 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
   - for `telegram`:
     - ```yaml
       - type: telegram
-        token: 1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234 # bot token
-        chat_id: '87654321' # chat id
+        token: '1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234' # bot token
+        chat_id: 87654321 # chat id
         message_templates:
         standard: |- # standard message
           *Carousell Chat/Offer*
@@ -132,6 +132,21 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
           {{FLAGS}}
         reminder: |- # reminder message
           *Carousell Deal Reminder*
+          [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+          Deal ${{OFFER}} in {{HOURS}} hour(s)!
+      ```
+  - for `discord` (webhook only):
+    - ```yaml
+      - type: discord
+        webhook_url: 'https://discord.com/api/webhooks/012345678910111213/lrennsXdocFAKEdOWAkpWEBHOOKMrMMcXa_FcmCURLUMNU_STsnbKVTRirmvLccmvkpA' # webhook url
+        message_templates:
+        standard: |- # standard message
+          **Carousell Chat/Offer**
+          [{{NAME}} - {{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+          ${{OFFER}}
+          {{FLAGS}}
+        reminder: |- # reminder message
+          **Carousell Reminder**
           [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
           Deal ${{OFFER}} in {{HOURS}} hour(s)!
       ```
