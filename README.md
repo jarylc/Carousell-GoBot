@@ -141,6 +141,7 @@ Currently, only your account can send these commands:
   - arguments: date/day and time (optional)
   - if no arguments, it will read the most recent reply and response
   - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
+- `faq` - resend the FAQ
 
 ## Roadmap
 See the [open issues](https://gitlab.com/jarylc/carousell-gobot/-/issues) for a list of proposed features (and known
