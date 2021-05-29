@@ -25,7 +25,7 @@ func TestReminders(t *testing.T) {
 	}
 
 	// set reminder config: 1h & 4h
-	config.Config.Reminders = []int8{1, 4}
+	config.Config.Reminders = []int16{1, 4}
 
 	// create base time
 	now := time.Now()
