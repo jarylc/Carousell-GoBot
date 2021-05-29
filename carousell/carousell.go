@@ -174,12 +174,13 @@ func GetMessages(buying bool) (map[string]responses.MessageInfo, error) {
 }
 
 var userID = ""
+
 func getUserIDFromCacheOrCookie() (string, error) {
 	if userID != "" {
 		return userID, nil
 	}
 
-	r, err := regexp2.Compile("(?<=_t=.*%3D)\\d+(?=;)", 0)
+	r, err := regexp2.Compile("(?<=_t=.*(u%3D|u=))\\d+(?=;)", 0)
 	if err != nil {
 		return "", err
 	}

@@ -33,7 +33,7 @@ message_templates: # message templates
   lower_offer: |- # official offer value was decreased from possible offer, buyer being cheeky?
     WARNING: Offer was lowered!
   low_balled: |- # low-balled
-    WARNING: Your offer is {{PERCENT}}% below listing price, it''s pretty low!
+    WARNING: Your offer is {{PERCENT}}% below listing price, it's pretty low!
   reminder: |- # reminder
     REMINDER: We are dealing this in {{HOURS}} hour(s)!
 reminders: # list of hours to set reminders for on every deal (optional, leave empty if none)

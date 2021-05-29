@@ -17,4 +17,15 @@ func TestGetUserID(t *testing.T) {
 	if userID != "344194" {
 		t.Error("Invalid UserID")
 	}
+
+	config.Config.Carousell.Cookie = "_t=t=1671458909706&u=3D344194;"
+
+	userID, err = getUserIDFromCacheOrCookie()
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(userID + " vs 344194")
+	if userID != "344194" {
+		t.Error("Invalid UserID")
+	}
 }
