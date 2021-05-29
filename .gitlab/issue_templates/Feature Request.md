@@ -3,3 +3,5 @@
 
 ## Reasoning
 {{Replace this with your reasoning for this feature request}}
+
+/label ~suggestion

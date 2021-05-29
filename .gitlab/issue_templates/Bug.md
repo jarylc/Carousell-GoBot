@@ -9,3 +9,5 @@
 
 ## Examples
 {{Any screenshots/videos}}
+
+/label ~bug

@@ -8,8 +8,8 @@ A Carousell.sg automation bot written in Golang
 
 [**Explore the docs »**](https://gitlab.com/jarylc/carousell-gobot)
 
-[Report Bugs](https://gitlab.com/jarylc/carousell-gobot/-/issues)
-· [Request Features](https://gitlab.com/jarylc/carousell-gobot/-/issues)
+[Report Bugs](https://gitlab.com/jarylc/carousell-gobot/-/issues/new?issuable_template=Bug)
+· [Request Features](https://gitlab.com/jarylc/carousell-gobot/-/issues/new?issuable_template=Feature%20Request)
 
 
 ## About The Project
