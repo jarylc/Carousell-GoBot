@@ -17,4 +17,4 @@ docker buildx inspect --bootstrap builder
 docker buildx install
 
 echo "${DOCKER_TOKEN}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-docker buildx build --push --cache-from=type=local,src=cache --platform "linux/amd64,linux/arm64,linux/arm/v7" -t "${REGISTRY_IMAGE}:${1}" .
+docker buildx build --push --cache-from=type=local,src=cache --platform "linux/amd64,linux/arm64,linux/arm/v7" -t "${REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}" -t "${REGISTRY_IMAGE}:${1}" .

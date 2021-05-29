@@ -4,17 +4,26 @@ cache:
   paths:
     - /go/src/
 stages:
+  - test
   - build
   - deploy
+
+test:
+  stage: test
+  before_script:
+    - ./ci-prepare.sh
+  script:
+    - CGO_ENABLED=0 go test ./...
 
 build:
   stage: build
   only:
     - pushes
     - master
+  before_script:
+    - ./ci-prepare.sh
   script:
     - ./ci-build.sh
-    - CGO_ENABLED=0 go test ./...
   artifacts:
     paths:
       - '*.windows-*'
@@ -23,8 +32,8 @@ build:
 deploy-nightly:
   stage: deploy
   only:
-    - develop:stable
-  image: docker
+    - develop
+  image: docker:stable
   services:
     - name: docker:stable-dind
       command: [ "--experimental" ]
