@@ -79,7 +79,7 @@ func ListIDs() []string {
 func Get(id string) (*models.State, bool) {
 	state, ok := states[id]
 	if !ok {
-		state = models.NewState()
+		state = models.NewState(id)
 		states[id] = state
 		return state, true
 	}

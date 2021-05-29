@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var reminders = map[time.Time][]*models.State{}
+var reminders = map[*models.State][]*models.Reminder{}
 var mutexReminders sync.Mutex
 
 // InitReminders - initialize all reminders from all states
@@ -34,6 +34,15 @@ func AddReminders(cState *models.State) {
 	if deal.Before(time.Now()) { // ignore if deal date is before today
 		return
 	}
+
+	// cancel existing reminders
+	cReminders, exist := reminders[cState]
+	if exist {
+		for _, reminders := range cReminders {
+			reminders.Cancel()
+		}
+	}
+
 	for _, offset := range config.Config.Reminders {
 		addReminder(cState, offset)
 	}
@@ -50,57 +59,47 @@ func addReminder(cState *models.State, offsetHours int8) {
 		return
 	}
 
-	_, exist := reminders[reminderTime]
-	if exist {
-		for _, id := range reminders[reminderTime] {
-			if id == cState { // ignore if already exist in timeslot
-				return
-			}
-		}
-	}
+	reminder := models.NewReminder(reminderTime)
+	reminders[cState] = append(reminders[cState], reminder)
 
-	reminders[reminderTime] = append(reminders[reminderTime], cState)
-	go func(stateID string) {
+	go func(cState *models.State, reminder *models.Reminder) {
 		if debug {
-			log.Printf("Reminder logic to run for `%s` at: %s", cState.ID, reminderTime.Format("Monday, 02 January 2006, 03:04:05PM"))
+			log.Printf("Reminder to run for `%s` at: %s", cState.ID, reminder.Time.Format("Monday, 02 January 2006, 03:04:05PM"))
 		}
-		<-time.After(time.Until(reminderTime))
-		mutexReminders.Lock()
-		defer mutexReminders.Unlock()
-		for _, cState := range reminders[reminderTime] {
+		select {
+		case <-time.After(time.Until(reminder.Time)):
+			if debug {
+				log.Printf("Reminder ran for `%s`", cState.ID)
+			}
+
+			reminder.Close()
+
 			until := time.Until(cState.DealOn)
-			minute := int16(math.Round(until.Minutes()))
-			if configContains(minute) {
-				hours := int16(math.Round(until.Hours()))
-				message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
+			hours := int16(math.Round(until.Hours()))
 
-				_, err := SendMessage(cState.ID, message)
+			message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
+			_, err := SendMessage(cState.ID, message)
+			if err != nil {
+				log.Println(err)
+			}
+
+			for i, forwarder := range forwarders.Forwarders {
+				message = strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
+				message = strings.ReplaceAll(message, "{{ITEM}}", forwarder.Escape(cState.Name))
+				message = strings.ReplaceAll(message, "{{OFFER}}", fmt.Sprintf("%.02f", cState.Price))
+				err = forwarder.SendMessage(message)
 				if err != nil {
-					log.Println(err)
-				}
-
-				for i, forwarder := range forwarders.Forwarders {
-					message = strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
-					message = strings.ReplaceAll(message, "{{ITEM}}", forwarder.Escape(cState.Name))
-					message = strings.ReplaceAll(message, "{{OFFER}}", fmt.Sprintf("%.02f", cState.Price))
-					err = forwarder.SendMessage(message)
-					if err != nil {
-						fmt.Println(err)
-						continue
-					}
+					fmt.Println(err)
+					continue
 				}
 			}
+		case <-reminder.ChanCancel:
+			if debug {
+				log.Printf("Reminder cancelled for `%s` at: %s", cState.ID, reminder.Time.Format("Monday, 02 January 2006, 03:04:05PM"))
+			}
 		}
-		delete(reminders, reminderTime)
-	}(cState.ID)
-}
-
-// utilities
-func configContains(mins int16) bool {
-	for _, hours := range config.Config.Reminders {
-		if hours == int8(math.Round(float64(mins)/60)) {
-			return true
-		}
-	}
-	return false
+		mutexReminders.Lock()
+		delete(reminders, cState)
+		mutexReminders.Unlock()
+	}(cState, reminder)
 }

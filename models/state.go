@@ -14,9 +14,9 @@ type State struct {
 	LastActivity time.Time `json:"last_activity"`
 }
 
-func NewState() *State {
+func NewState(id string) *State {
 	return &State{
-		ID:           "",
+		ID:           id,
 		Name:         "",
 		Price:        0,
 		DealOn:       time.Time{},
