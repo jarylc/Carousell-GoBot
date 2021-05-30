@@ -50,6 +50,7 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 				}
 
 				toForward = true
+				flags = append(flags, constants.NEW_OFFER)
 			}
 
 			if info.LatestPriceFormatted == "0" || info.State == "D" || info.State == "C" || debug { // if official offer not made yet, declined, cancelled or debug mode
@@ -99,7 +100,7 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 		}
 	}
 
-	if toForward {
+	if toForward && !contains(flags, constants.SUPER_LOW_BALL) {
 		for i, forwarder := range forwarders.Forwarders {
 			forward := strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Standard, "{{NAME}}", forwarder.Escape(msg.User.Name))
 			forward = strings.ReplaceAll(forward, "{{ITEM}}", forwarder.Escape(info.Product.Title))
@@ -115,6 +116,14 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 	}
 
 	return nil
+}
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func handleBuying(info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
@@ -208,11 +217,11 @@ func checkAndSendPriceMessage(info responses.MessageInfo, msg responses.Message,
 	}
 
 	if price < listedPrice*0.5 && !debug { // don't bother treating these as potential offers, even Carousell doesn't
-		return "", err
+		*flags = append(*flags, constants.SUPER_LOW_BALL)
 	}
 
 	if price <= listedPrice*config.Config.Carousell.LowBall {
-		reply += "\n\n" + strings.ReplaceAll(config.Config.MessageTemplates.LowBalled, "{{PERCENT}}", fmt.Sprintf("%.0f", 100-(config.Config.Carousell.LowBall*100)))
+		reply += "\n\n" + strings.ReplaceAll(config.Config.MessageTemplates.LowBalled, "{{PERCENT}}", fmt.Sprintf("%.0f", (listedPrice-price)/listedPrice*100))
 		*flags = append(*flags, constants.LOW_BALL)
 	}
 

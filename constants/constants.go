@@ -6,8 +6,11 @@ const PRICE_EXPRESSION = "^(\\d{1,5}\\.?\\d{0,2})$|(\\d+\\.?\\d{0,2}((?<=(\\$|of
 
 const MESSAGE = "MESSAGE"
 const MAKE_OFFER = "MAKE_OFFER"
+
+const NEW_OFFER = "NEW OFFER"
 const OFFICIAL = "OFFICIAL"
 const LOW_BALL = "LOW BALL"
+const SUPER_LOW_BALL = "SUPER LOW BALL"
 const LOWERED = "LOWERED"
 
 const CAROUSELL_CHANNEL = "{{CHANNEL}}-carousell-{{CHATID}}"
