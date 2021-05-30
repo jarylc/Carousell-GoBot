@@ -20,19 +20,27 @@ func LoadForwarders() {
 		return
 	}
 	for _, forwarder := range config.Config.Forwarders {
+		var instance Forwarder = nil
 		switch forwarder.Type {
 		case "telegram":
-			telegram := Telegram{
+			instance = Telegram{
 				Token:  forwarder.Token,
 				ChatID: forwarder.ChatID,
 			}
-			Forwarders = append(Forwarders, telegram)
 		case "discord":
-			discord := Discord{
+			instance = Discord{
 				WebhookURL: forwarder.WebhookURL,
 			}
-			Forwarders = append(Forwarders, discord)
+		case "slack":
+			instance = Slack{
+				WebhookURL: forwarder.WebhookURL,
+			}
+		default:
+			log.Printf("Skipping invalid forwarder type `%s`\n", forwarder.Type)
 		}
-		log.Printf("\t1x %s loaded\n", forwarder.Type)
+		if instance != nil {
+			Forwarders = append(Forwarders, instance)
+			log.Printf("\t1x %s loaded\n", forwarder.Type)
+		}
 	}
 }

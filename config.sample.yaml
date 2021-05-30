@@ -2,7 +2,7 @@ carousell:
   # entire Cookie header from https://carousell.sg
   cookie: _t2=..._t=...auth-session=...
   # interval to ping Carousell to check connectivity
-  ping_interval: 300
+  ping_interval: 60
   # percentage of price to be considered low-ball in decimal notation
   low_ball: 0.7
 message_templates: # message templates
@@ -69,4 +69,16 @@ forwarders: # list of forwarders (optional, `[]` if none)
       reminder: |- # reminder message
         **Carousell Reminder**
         [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+        Deal ${{OFFER}} in {{HOURS}} hour(s)!
+  - type: slack
+    webhook_url: 'https://hooks.slack.com/services/T1234GN5678/B1FAKEZNRCM/fPoWEBHOOK2Yyn3oURLOjW4J' # webhook url
+    message_templates:
+      standard: |- # standard message
+        *Carousell Chat/Offer*
+        <https://www.carousell.sg/inbox/{{ID}}|{{NAME}} - {{ITEM}}>
+        ${{OFFER}}
+        {{FLAGS}}
+      reminder: |- # reminder message
+        *Carousell Reminder*
+        <https://www.carousell.sg/inbox/{{ID}}|{{ITEM}}>
         Deal ${{OFFER}} in {{HOURS}} hour(s)!

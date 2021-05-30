@@ -74,7 +74,7 @@ carousell-gobot:
 $ cd /path/to/project/folder
 $ go build -ldflags="-w -s"
 ```
-### Building for amd64 Windows
+### Building for 64-bit Windows
 ```shell
 $ cd /path/to/project/folder
 $ GOOS=windows GOARCH=amd64 go build -ldflags="-w -s"
@@ -119,7 +119,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
 - `command_prefix` - prefix to use for the app to detect as a command
 - `state_prune` - number of days to keep items in state after last activity
 - `forwarders` - list of forwarders (optional, leave empty if none)
-  - for `telegram`:
+  - for `telegram` (guide: https://core.telegram.org/bots):
     - ```yaml
       - type: telegram
         token: '1234567890:ABCDEFGHIJKLMNOPQRSTUVWXYZabcde1234' # bot token
@@ -135,7 +135,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
           [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
           Deal ${{OFFER}} in {{HOURS}} hour(s)!
       ```
-  - for `discord` (webhook only):
+  - for `discord` (webhook only, guide: https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks):
     - ```yaml
       - type: discord
         webhook_url: 'https://discord.com/api/webhooks/012345678910111213/lrennsXdocFAKEdOWAkpWEBHOOKMrMMcXa_FcmCURLUMNU_STsnbKVTRirmvLccmvkpA' # webhook url
@@ -148,6 +148,21 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
         reminder: |- # reminder message
           **Carousell Reminder**
           [{{ITEM}}](https://www.carousell.sg/inbox/{{ID}})
+          Deal ${{OFFER}} in {{HOURS}} hour(s)!
+      ```
+  - for `slack` (webhook only, guide: https://api.slack.com/messaging/webhooks):
+    - ```yaml
+      - type: slack
+        webhook_url: 'https://hooks.slack.com/services/T1234GN5678/B1FAKEZNRCM/fPoWEBHOOK2Yyn3oURLOjW4J' # webhook url
+        message_templates:
+        standard: |- # standard message
+          *Carousell Chat/Offer*
+          <https://www.carousell.sg/inbox/{{ID}}|{{NAME}} - {{ITEM}}>
+          ${{OFFER}}
+          {{FLAGS}}
+        reminder: |- # reminder message
+          *Carousell Reminder*
+          <https://www.carousell.sg/inbox/{{ID}}|{{ITEM}}>
           Deal ${{OFFER}} in {{HOURS}} hour(s)!
       ```
 ### Commands (prefixed with command_prefix configuration)
