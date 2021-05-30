@@ -3,7 +3,7 @@ package forwarders
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -38,9 +38,9 @@ func (m Discord) SendMessage(text string) error {
 		return err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 204 { // discord returns 204 NO CONTENT
 		log.Println(string(body))
-		return errors.New("discord returned non-200 status code")
+		return fmt.Errorf("discord returned %d", resp.StatusCode)
 	}
 
 	return nil

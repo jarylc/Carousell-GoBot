@@ -3,7 +3,7 @@ package forwarders
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -47,7 +47,7 @@ func (m Telegram) SendMessage(text string) error {
 
 	if resp.StatusCode != 200 {
 		log.Println(string(body))
-		return errors.New("telegram returned non-200 status code")
+		return fmt.Errorf("telegram returned %d", resp.StatusCode)
 	}
 
 	return nil
