@@ -45,19 +45,19 @@ func HTTPGet(url string, out interface{}) error {
 func GetPriceFromMessage(msg string) (float64, error) {
 	r, err := regexp2.Compile(constants.PRICE_EXPRESSION, regexp2.IgnoreCase)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
 	priceStr, err := r.FindStringMatch(msg)
 	if err != nil {
-		return -1, err
+		return 0, err
 	}
 
-	price := -1.0
+	price := 0.0
 	if priceStr != nil {
 		price, err = strconv.ParseFloat(priceStr.String(), 64)
 		if err != nil {
-			return -1, err
+			return 0, err
 		}
 	}
 

@@ -50,7 +50,7 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 				}
 
 				toForward = true
-				flags = append(flags, constants.NEW_OFFER)
+				flags = append(flags, constants.NEW_CHAT)
 			}
 
 			if info.LatestPriceFormatted == "0" || info.State == "D" || info.State == "C" || debug { // if official offer not made yet, declined, cancelled or debug mode
@@ -198,7 +198,7 @@ func handle(raw []byte) error {
 }
 
 func checkAndSendPriceMessage(info responses.MessageInfo, msg responses.Message, data responses.MessageData, cState *models.State, flags *[]string, price float64) (string, error) {
-	if price == -1 {
+	if price == 0 {
 		return "", nil
 	}
 	cState.Price = price
