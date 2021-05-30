@@ -26,7 +26,6 @@ var mutex sync.Mutex
 // Connect - return websocket connection, if not create it
 //nolint:funlen,gocognit
 func Connect() *websocket.Conn {
-	mutex.Lock() // if already attempting to connect, wait
 	if ws != nil {
 		return ws
 	}
@@ -53,7 +52,6 @@ main:
 		if err != nil {
 			log.Panic(err)
 		}
-		mutex.Unlock()
 
 		done := make(chan struct{})
 		go func() {
@@ -61,11 +59,13 @@ main:
 			for {
 				_, message, err := ws.ReadMessage()
 				if err != nil {
-					break
+					log.Println(err)
+					return
 				}
 				err = handle(message)
 				if err != nil {
 					log.Println(err)
+					return
 				}
 			}
 		}()
@@ -79,11 +79,13 @@ main:
 		for {
 			select {
 			case <-done:
-				return ws
+				log.Println("Error occurred, reconnecting in 5 seconds...")
+				time.Sleep(5 * time.Second)
+				continue main
 			case <-pinger.C:
 				err := ws.WriteMessage(websocket.TextMessage, []byte(strings.ReplaceAll(constants.CAROUSELL_PING, "{{TIME}}", utils.GetEpochString())))
 				if err != nil {
-					log.Println("Ping error, restarting in 5 seconds...")
+					log.Println("Ping error, reconnecting in 5 seconds...")
 					time.Sleep(5 * time.Second)
 					continue main
 				}
