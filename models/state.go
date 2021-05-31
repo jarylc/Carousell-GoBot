@@ -9,8 +9,8 @@ type State struct {
 	Name         string    `json:"name"`
 	Price        float64   `json:"price"`
 	DealOn       time.Time `json:"deal_on"`
-	LastResponse string    `json:"last_response"`
-	LastReply    string    `json:"last_reply"`
+	LastReceived string    `json:"last_received"`
+	LastSent     string    `json:"last_sent"`
 	LastActivity time.Time `json:"last_activity"`
 }
 
@@ -20,8 +20,8 @@ func NewState(id string) *State {
 		Name:         "",
 		Price:        0,
 		DealOn:       time.Time{},
-		LastResponse: "",
-		LastReply:    "",
+		LastReceived: "",
+		LastSent:     "",
 		LastActivity: time.Time{},
 	}
 }

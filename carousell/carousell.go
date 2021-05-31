@@ -71,10 +71,6 @@ main:
 		}()
 		log.Println("Chat connected")
 
-		log.Println("Initiating reminders system")
-		InitReminders()
-		log.Println("Reminder system initiated")
-
 		pinger := time.NewTicker(time.Duration(config.Config.Carousell.PingInterval) * time.Second)
 		for {
 			select {

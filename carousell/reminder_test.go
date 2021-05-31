@@ -47,7 +47,7 @@ func TestReminders(t *testing.T) {
 	}
 
 	// check state #1 to have 1 reminders and correct time (2 hours later)
-	rState1, ok := reminders[state1]
+	rState1, ok := reminders["1"]
 	if !ok {
 		t.Errorf("missing state #1 reminder")
 	}
@@ -61,7 +61,7 @@ func TestReminders(t *testing.T) {
 	rState1[0].Cancel()
 
 	// check state #2 to have 2 reminders and correct times (2 hours & 5 hours later)
-	rState2, ok := reminders[state2]
+	rState2, ok := reminders["2"]
 	if !ok {
 		t.Errorf("missing state #1 reminder")
 	}

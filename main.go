@@ -42,6 +42,10 @@ func main() {
 	forwarders.LoadForwarders()
 	log.Println("Forwarders loaded")
 
+	log.Println("Initiating reminders system")
+	carousell.InitReminders()
+	log.Println("Reminder system initiated")
+
 	log.Println("Connecting to chat...")
 	_ = carousell.Connect()
 }

@@ -2,7 +2,7 @@
 
 # Carousell GoBot
 A Carousell.sg automation bot written in Golang
-> WARNING: IN HEAVY DEVELOPMENT AND ALPHA RELEASES ONLY. Expect bugs and possibly breaking changes every update.
+> WARNING: ALPHA RELEASES ONLY. Expect bugs and possibly breaking changes every update.
 
 [**Docker Hub Image »**](https://hub.docker.com/r/jarylc/carousell-gobot)
 
@@ -89,10 +89,15 @@ $ docker build .
 ### Get Carousell.sg Cookie
 #### Firefox
 1. Go to https://www.carousell.sg/
-2. Right click anywhere
-3. Press `CTRL+SHIFT+E`
+2. Press `CTRL+SHIFT+E` (Windows) / `⌘+⌥+E` (Mac)
+3. Refresh the page
+4. ![Firefox Final Step](readme/cookie-firefox.png)
+#### Chrome
+1. Go to https://www.carousell.sg/
+2. Press `CTRL+SHIFT+C` (Windows) / `⌘+⌥+C` (Mac)
+3. Click on `Network` tab
 4. Refresh the page
-5. ![Firefox Final Step](readme/cookie-firefox.png)
+5. ![Chrome Final Step](readme/cookie-chrome.png)
 ### Configuration
 #### Sample
 https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml

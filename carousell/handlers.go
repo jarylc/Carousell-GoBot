@@ -34,7 +34,7 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 			return err
 		}
 		if msg.User.GuestID != userID { // by other party
-			cState.LastResponse = msg.Message
+			cState.LastReceived = msg.Message
 
 			if initial {
 				_, err = SendMessage(data.OfferID, config.Config.MessageTemplates.FAQ)
@@ -71,7 +71,7 @@ func handleSelling(info responses.MessageInfo, msg responses.Message, data respo
 				flags = append(flags, constants.OFFICIAL)
 			}
 		} else { // by myself
-			cState.LastReply = msg.Message
+			cState.LastSent = msg.Message
 
 			err = handleCommand(info, msg, data)
 			if err != nil {
@@ -136,15 +136,27 @@ func handleBuying(info responses.MessageInfo, msg responses.Message, data respon
 	if err != nil {
 		return err
 	}
-	if msg.User.GuestID != userID && msg.User.Name != "" { // by other party
-		cState.LastResponse = msg.Message
-	} else {
-		cState.LastReply = msg.Message
-	}
 
-	err = handleCommand(info, msg, data)
-	if err != nil {
-		return err
+	switch msg.CustomType {
+	case constants.MESSAGE:
+		cState.Price, err = utils.GetPriceFromMessage(msg.Message)
+		if err != nil {
+			return err
+		}
+		if msg.User.GuestID != userID && msg.User.Name != "" { // by other party
+			cState.LastReceived = msg.Message
+		} else {
+			cState.LastSent = msg.Message
+			err = handleCommand(info, msg, data)
+			if err != nil {
+				return err
+			}
+		}
+	case constants.MAKE_OFFER:
+		cState.Price, err = strconv.ParseFloat(data.OfferAmount, 64)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

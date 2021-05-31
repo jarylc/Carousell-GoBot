@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-var reminders = map[*models.State][]*models.Reminder{}
+var reminders = map[string][]*models.Reminder{} // id as key
 var mutexReminders sync.Mutex
 
 // InitReminders - initialize all reminders from all states
@@ -36,7 +36,7 @@ func AddReminders(cState *models.State) {
 	}
 
 	// cancel existing reminders
-	cReminders, exist := reminders[cState]
+	cReminders, exist := reminders[cState.ID]
 	if exist {
 		for _, reminders := range cReminders {
 			reminders.Cancel()
@@ -60,7 +60,7 @@ func addReminder(cState *models.State, offsetHours int16) {
 	}
 
 	reminder := models.NewReminder(reminderTime)
-	reminders[cState] = append(reminders[cState], reminder)
+	reminders[cState.ID] = append(reminders[cState.ID], reminder)
 
 	go func(cState *models.State, reminder *models.Reminder) {
 		if debug {
@@ -99,7 +99,7 @@ func addReminder(cState *models.State, offsetHours int16) {
 			}
 		}
 		mutexReminders.Lock()
-		delete(reminders, cState)
+		delete(reminders, cState.ID)
 		mutexReminders.Unlock()
 	}(cState, reminder)
 }

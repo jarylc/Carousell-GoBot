@@ -60,9 +60,9 @@ func handleCommand(info responses.MessageInfo, msg responses.Message, data respo
 				return err
 			}
 		} else {
-			parse, err = c.ParseDate(cState.LastResponse, time.Now())
+			parse, err = c.ParseDate(cState.LastReceived, time.Now())
 			if err != nil || parse == nil {
-				parse, err = c.ParseDate(cState.LastReply, time.Now())
+				parse, err = c.ParseDate(cState.LastSent, time.Now())
 				if err != nil || parse == nil {
 					_, err = SendMessage(data.OfferID, "ERROR: Unable to find natural date in last response and reply, please specify in argument")
 					if err != nil {
