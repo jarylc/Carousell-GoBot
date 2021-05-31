@@ -1,4 +1,4 @@
-package forwarders
+package messaging
 
 import (
 	"bytes"
@@ -10,17 +10,17 @@ import (
 	"strings"
 )
 
-type Discord struct {
+type Slack struct {
 	WebhookURL string
 }
 
-type DiscordMessage struct {
-	Content string `json:"content"`
+type SlackMessage struct {
+	Text string `json:"text"`
 }
 
-func (m Discord) SendMessage(text string) error {
-	values := DiscordMessage{
-		Content: text,
+func (m Slack) SendMessage(text string) error {
+	values := SlackMessage{
+		Text: text,
 	}
 	msg, err := json.Marshal(values)
 	if err != nil {
@@ -38,22 +38,21 @@ func (m Discord) SendMessage(text string) error {
 		return err
 	}
 
-	if resp.StatusCode != 204 { // discord returns 204 NO CONTENT
+	if resp.StatusCode != 200 {
 		log.Println(string(body))
-		return fmt.Errorf("discord returned %d", resp.StatusCode)
+		return fmt.Errorf("slack returned %d", resp.StatusCode)
 	}
 
 	return nil
 }
 
-func (m Discord) Escape(str string) string {
-	// Markdown
+func (m Slack) Escape(str string) string {
+	// mrkdwn
 	replacer := strings.NewReplacer(
-		"_", "\\_",
-		"*", "\\*",
+		"&", "&amp;",
 		"[", "\\[",
-		"`", "\\`",
-		"\\", "\\\\",
+		"<", "&lt;",
+		">", "&gt;",
 	)
 	str = replacer.Replace(str)
 	return str

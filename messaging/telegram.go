@@ -1,4 +1,4 @@
-package forwarders
+package messaging
 
 import (
 	"bytes"

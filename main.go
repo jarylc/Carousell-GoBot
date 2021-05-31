@@ -4,7 +4,7 @@ import (
 	"carousell-gobot/carousell"
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
-	"carousell-gobot/forwarders"
+	"carousell-gobot/messaging"
 	"flag"
 	"log"
 	"os"
@@ -39,7 +39,7 @@ func main() {
 	log.Println("State loaded")
 
 	log.Println("Loading forwarders...")
-	forwarders.LoadForwarders()
+	messaging.LoadForwarders()
 	log.Println("Forwarders loaded")
 
 	log.Println("Initiating reminders system")

@@ -3,7 +3,7 @@ package carousell
 import (
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
-	"carousell-gobot/forwarders"
+	"carousell-gobot/messaging"
 	"carousell-gobot/models"
 	"fmt"
 	"log"
@@ -78,12 +78,12 @@ func addReminder(cState *models.State, offsetHours int16) {
 			hours := int16(math.Round(until.Hours()))
 
 			message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
-			_, err := SendMessage(cState.ID, message)
+			err := messaging.NewCarousell(Connect(), cState.ID).SendMessage(message)
 			if err != nil {
 				log.Println(err)
 			}
 
-			for i, forwarder := range forwarders.Forwarders {
+			for i, forwarder := range messaging.Forwarders {
 				message = strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
 				message = strings.ReplaceAll(message, "{{ITEM}}", forwarder.Escape(cState.Name))
 				message = strings.ReplaceAll(message, "{{OFFER}}", fmt.Sprintf("%.02f", cState.Price))

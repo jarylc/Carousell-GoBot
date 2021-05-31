@@ -4,6 +4,7 @@ import (
 	"carousell-gobot/chrono"
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
+	"carousell-gobot/messaging"
 	"carousell-gobot/models/responses"
 	"errors"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 )
 
 //nolint:funlen, gocognit
-func handleCommand(info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
+func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
 	var err error
 
 	if !strings.HasPrefix(msg.Message, config.Config.CommandPrefix) {
@@ -53,7 +54,7 @@ func handleCommand(info responses.MessageInfo, msg responses.Message, data respo
 		if args != nil { // with argument
 			parse, err = c.ParseDate(args.String(), time.Now())
 			if err != nil || parse == nil {
-				_, err = SendMessage(data.OfferID, "ERROR: Invalid natural date")
+				err = messaging.SendMessage("ERROR: Invalid natural date")
 				if err != nil {
 					return err
 				}
@@ -64,7 +65,7 @@ func handleCommand(info responses.MessageInfo, msg responses.Message, data respo
 			if err != nil || parse == nil {
 				parse, err = c.ParseDate(cState.LastSent, time.Now())
 				if err != nil || parse == nil {
-					_, err = SendMessage(data.OfferID, "ERROR: Unable to find natural date in last response and reply, please specify in argument")
+					err = messaging.SendMessage("ERROR: Unable to find natural date in last response and reply, please specify in argument")
 					if err != nil {
 						return err
 					}
@@ -77,12 +78,12 @@ func handleCommand(info responses.MessageInfo, msg responses.Message, data respo
 
 		AddReminders(cState)
 
-		_, err = SendMessage(data.OfferID, fmt.Sprintf("Deal scheduled on: %s\nReminders set: %shr(s) before", parse.Format("Monday, 02 January 2006, 03:04:05PM"), strings.Trim(strings.Join(strings.Fields(fmt.Sprint(config.Config.Reminders)), "hr(s), "), "[]")))
+		err = messaging.SendMessage(fmt.Sprintf("Deal scheduled on: %s\nReminders set: %shr(s) before", parse.Format("Monday, 02 January 2006, 03:04:05PM"), strings.Trim(strings.Join(strings.Fields(fmt.Sprint(config.Config.Reminders)), "hr(s), "), "[]")))
 		if err != nil {
 			return err
 		}
 	case "faq": // resend faq
-		_, err = SendMessage(data.OfferID, config.Config.MessageTemplates.FAQ)
+		err = messaging.SendMessage(config.Config.MessageTemplates.FAQ)
 		if err != nil {
 			return err
 		}
