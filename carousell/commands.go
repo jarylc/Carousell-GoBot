@@ -54,39 +54,27 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 		if args != nil { // with argument
 			parse, err = c.ParseDate(args.String(), time.Now())
 			if err != nil || parse == nil {
-				err = messaging.SendMessage("ERROR: Invalid natural date")
-				if err != nil {
-					return err
-				}
-				return err
+				messaging.SendMessage("ERROR: Invalid natural date")
 			}
 		} else {
 			parse, err = c.ParseDate(cState.LastReceived, time.Now())
 			if err != nil || parse == nil {
 				parse, err = c.ParseDate(cState.LastSent, time.Now())
 				if err != nil || parse == nil {
-					err = messaging.SendMessage("ERROR: Unable to find natural date in last response and reply, please specify in argument")
-					if err != nil {
-						return err
-					}
-					return err
+					messaging.SendMessage("ERROR: Unable to find natural date in last response and reply, please specify in argument")
 				}
 			}
 		}
 
-		cState.DealOn = time.Unix(parse.Unix(), 0)
-
-		AddReminders(cState)
-
-		err = messaging.SendMessage(fmt.Sprintf("Deal scheduled on: %s\nReminders set: %shr(s) before", parse.Format("Monday, 02 January 2006, 03:04:05PM"), strings.Trim(strings.Join(strings.Fields(fmt.Sprint(config.Config.Reminders)), "hr(s), "), "[]")))
-		if err != nil {
-			return err
+		if parse != nil {
+			cState.DealOn = time.Unix(parse.Unix(), 0)
+			AddReminders(cState)
+			messaging.SendMessage(fmt.Sprintf("Deal scheduled on: %s\nReminders set: %shr(s) before", parse.Format("Monday, 02 January 2006, 03:04:05PM"), strings.Trim(strings.Join(strings.Fields(fmt.Sprint(config.Config.Reminders)), "hr(s), "), "[]")))
+		} else {
+			return errors.New("ERROR: Unable to parse date from messages")
 		}
 	case "faq": // resend faq
-		err = messaging.SendMessage(config.Config.MessageTemplates.FAQ)
-		if err != nil {
-			return err
-		}
+		messaging.SendMessage(config.Config.MessageTemplates.FAQ)
 	}
 
 	return nil

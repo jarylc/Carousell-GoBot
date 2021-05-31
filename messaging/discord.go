@@ -18,7 +18,7 @@ type DiscordMessage struct {
 	Content string `json:"content"`
 }
 
-func (m Discord) SendMessage(text string) error {
+func (m Discord) ProcessMessage(text string) error {
 	values := DiscordMessage{
 		Content: text,
 	}
@@ -57,4 +57,11 @@ func (m Discord) Escape(str string) string {
 	)
 	str = replacer.Replace(str)
 	return str
+}
+
+func (m Discord) SendMessage(text string) {
+	addQueue(queueItem{
+		messager: m,
+		message:  text,
+	})
 }

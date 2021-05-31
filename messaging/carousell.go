@@ -12,7 +12,6 @@ import (
 	"github.com/gorilla/websocket"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type Carousell struct {
@@ -22,12 +21,12 @@ type Carousell struct {
 
 func NewCarousell(ws *websocket.Conn, chatID string) Carousell {
 	return Carousell{
-		WS: ws,
+		WS:     ws,
 		ChatID: chatID,
 	}
 }
 
-func (m Carousell) SendMessage(text string) error {
+func (m Carousell) ProcessMessage(text string) error {
 	if text == "" {
 		return nil
 	}
@@ -58,8 +57,6 @@ func (m Carousell) SendMessage(text string) error {
 		return err
 	}
 
-	time.Sleep(1 * time.Second)
-
 	return nil
 }
 
@@ -67,6 +64,15 @@ func (m Carousell) Escape(str string) string {
 	// no need for Carousell
 	return str
 }
+
+func (m Carousell) SendMessage(text string) {
+	addQueue(queueItem{
+		messager: m,
+		message:  text,
+	})
+}
+
+// UTILITIES
 
 func (m Carousell) CheckAndSendPriceMessage(info responses.MessageInfo, msg responses.Message, cState *models.State, flags *[]string, price float64) (bool, error) {
 	if price == 0 {
@@ -96,10 +102,7 @@ func (m Carousell) CheckAndSendPriceMessage(info responses.MessageInfo, msg resp
 		*flags = append(*flags, constants.LOW_BALL)
 	}
 
-	err = m.SendMessage(reply)
-	if err != nil {
-		return false, err
-	}
+	m.SendMessage(reply)
 
 	return true, nil
 }

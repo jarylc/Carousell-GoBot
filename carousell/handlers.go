@@ -35,17 +35,11 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 		if msg.User.GuestID != userID { // by other party
 			cState.LastReceived = msg.Message
 			if initial {
-				err = carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
-				if err != nil {
-					return err
-				}
+				carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
 
 				reply := strings.ReplaceAll(config.Config.MessageTemplates.Initial, "{{NAME}}", info.User.Username)
 				reply = strings.ReplaceAll(reply, "{{ITEM}}", info.Product.Title)
-				err = carousellMessaging.SendMessage(reply)
-				if err != nil {
-					return err
-				}
+				carousellMessaging.SendMessage(reply)
 
 				toForward = true
 				flags = append(flags, constants.NEW_CHAT)
@@ -86,10 +80,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			return err
 		}
 		if price < cState.Price {
-			err = carousellMessaging.SendMessage(config.Config.MessageTemplates.LowerOffer)
-			if err != nil {
-				return err
-			}
+			carousellMessaging.SendMessage(config.Config.MessageTemplates.LowerOffer)
 			flags = append(flags, constants.LOWERED)
 		}
 
@@ -104,11 +95,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			forward = strings.ReplaceAll(forward, "{{ID}}", data.OfferID)
 			forward = strings.ReplaceAll(forward, "{{OFFER}}", fmt.Sprintf("%.02f", price))
 			forward = strings.ReplaceAll(forward, "{{FLAGS}}", strings.Join(flags, " | "))
-			err := forwarder.SendMessage(forward)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
+			forwarder.SendMessage(forward)
 		}
 	}
 

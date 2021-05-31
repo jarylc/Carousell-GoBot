@@ -6,11 +6,12 @@ import (
 )
 
 // Forwarders - contains all the forwarders of the program
-var Forwarders []Forwarder
+var Forwarders []Messager
 
-// Forwarder - Base forwarder interface
-type Forwarder interface {
-	SendMessage(text string) error
+// Messager - Base messager interface
+type Messager interface {
+	ProcessMessage(item string) error
+	SendMessage(text string)
 	Escape(str string) string
 }
 
@@ -20,7 +21,7 @@ func LoadForwarders() {
 		return
 	}
 	for _, forwarder := range config.Config.Forwarders {
-		var instance Forwarder = nil
+		var instance Messager = nil
 		switch forwarder.Type {
 		case "telegram":
 			instance = Telegram{

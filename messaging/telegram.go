@@ -21,7 +21,7 @@ type TelegramMessage struct {
 	ParseMode string `json:"parse_mode"`
 }
 
-func (m Telegram) SendMessage(text string) error {
+func (m Telegram) ProcessMessage(text string) error {
 	var url = "https://api.telegram.org/bot" + m.Token + "/sendMessage"
 
 	values := TelegramMessage{
@@ -64,4 +64,11 @@ func (m Telegram) Escape(str string) string {
 	)
 	str = replacer.Replace(str)
 	return str
+}
+
+func (m Telegram) SendMessage(text string) {
+	addQueue(queueItem{
+		messager: m,
+		message:  text,
+	})
 }

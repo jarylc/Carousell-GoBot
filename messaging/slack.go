@@ -18,7 +18,7 @@ type SlackMessage struct {
 	Text string `json:"text"`
 }
 
-func (m Slack) SendMessage(text string) error {
+func (m Slack) ProcessMessage(text string) error {
 	values := SlackMessage{
 		Text: text,
 	}
@@ -56,4 +56,11 @@ func (m Slack) Escape(str string) string {
 	)
 	str = replacer.Replace(str)
 	return str
+}
+
+func (m Slack) SendMessage(text string) {
+	addQueue(queueItem{
+		messager: m,
+		message:  text,
+	})
 }
