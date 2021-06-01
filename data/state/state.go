@@ -51,9 +51,6 @@ func Load(path string) error {
 
 // Save - save state file
 func Save() error {
-	mutex.Lock()
-	defer mutex.Unlock()
-
 	save, err := json.Marshal(states)
 	if err != nil {
 		return err
@@ -121,13 +118,19 @@ func prune() {
 	if debug {
 		log.Println("Running scheduled state pruning")
 	}
+	mutex.Lock()
+	defer mutex.Unlock()
 	for id, cState := range states {
-		if -time.Until(cState.LastActivity).Hours() >= float64(config.Config.StatePrune) { // past pruning date
+		if -time.Until(cState.LastActivity).Hours() >= float64(config.Config.StatePrune*24) { // past pruning date
 			if debug {
 				log.Printf("\t%s state pruned", id)
 			}
 			delete(states, id)
 		}
+	}
+	err := Save()
+	if err != nil {
+		log.Println(err)
 	}
 }
 
