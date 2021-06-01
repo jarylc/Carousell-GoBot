@@ -17,6 +17,6 @@ const CAROUSELL_CHANNEL = "{{CHANNEL}}-carousell-{{CHATID}}"
 const CAROUSELL_PING = "PING{\"id\":{{TIME}},\"active\":1,\"req_id\":\"\"}\n"
 const CAROUSELL_MESG = "MESG{DATA}\n"
 
-const CAROUSELL_URL_TOKEN = "https://www.carousell.sg/api-service/api/1.0/chat/token/"
+const CAROUSELL_URL_TOKEN = "https://www.carousell.sg/api-service/api/1.0/chat/token/" //nolint:gosec
 const CAROUSELL_URL_CHAT = "ws-" + CHANNEL + ".sendbird.com/"
 const CAROUSELL_URL_MESSAGES = "https://www.carousell.sg/api-service/offer/1.0/me/?count=20&type={{TYPE}}"

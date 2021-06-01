@@ -45,7 +45,17 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 				flags = append(flags, constants.NEW_CHAT)
 			}
 
-			if info.LatestPriceFormatted == "0" || info.State == "D" || info.State == "C" || debug { // if official offer not made yet, declined, cancelled or debug mode
+			switch {
+			case info.IsProductSold || info.Product.Status == "R" || info.Product.Status == "D": // product sold, reserved or deleted
+				reason := "sold"
+				if info.Product.Status == "R" {
+					reason = "reserved"
+				} else if info.Product.Status == "D" {
+					reason = "deleted"
+				}
+				carousellMessaging.SendMessage(strings.ReplaceAll(config.Config.MessageTemplates.NotAvailable, "{{REASON}}", reason))
+				toForward = false
+			case info.LatestPriceFormatted == "0" || info.State == "D" || info.State == "C" || debug: // official offer price $0, offer was declined or cancelled
 				if info.State != "A" { // not accepted yet
 					price, err = utils.GetPriceFromMessage(msg.Message)
 					if err != nil {
@@ -59,7 +69,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 						toForward = true
 					}
 				}
-			} else {
+			default:
 				flags = append(flags, constants.OFFICIAL)
 			}
 		} else { // by myself

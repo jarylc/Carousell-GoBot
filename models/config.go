@@ -9,6 +9,7 @@ type Config struct {
 	MessageTemplates struct {
 		FAQ           string `yaml:"faq"`
 		Initial       string `yaml:"initial"`
+		NotAvailable  string `yaml:"not_available"`
 		Offered       string `yaml:"offered"`
 		PossibleOffer string `yaml:"possible_offer"`
 		LowerOffer    string `yaml:"lower_offer"`
@@ -44,6 +45,7 @@ func DefaultConfig() *Config {
 		MessageTemplates: struct {
 			FAQ           string `yaml:"faq"`
 			Initial       string `yaml:"initial"`
+			NotAvailable  string `yaml:"not_available"`
 			Offered       string `yaml:"offered"`
 			PossibleOffer string `yaml:"possible_offer"`
 			LowerOffer    string `yaml:"lower_offer"`
@@ -51,7 +53,8 @@ func DefaultConfig() *Config {
 			Reminder      string `yaml:"reminder"`
 		}{
 			FAQ:           "",
-			Initial:       "Hello @{{NAME}}!\n\nThanks for your interest in my item {{ITEM}}!",
+			Initial:       "Hello @{{NAME}}!\n\nThanks for your interest in my item `{{ITEM}}`!",
+			NotAvailable:  "Please note that this listing might not be available anymore as it was {{REASON}}.",
 			Offered:       "Thank you for your offer of ${{OFFER}}!",
 			PossibleOffer: "It looks like you are making an offer of ${{OFFER}}.",
 			LowerOffer:    "WARNING: Offer was lowered!",

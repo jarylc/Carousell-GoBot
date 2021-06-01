@@ -111,6 +111,8 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
   - `initial` - new chat initial greeting (placeholders available)
     - `{{NAME}}` - name of sender
     - `{{ITEM}}` - name of item
+  - `not_available` - chat message on a listing that is sold, reserved or deleted (placeholders available)
+    - `{{REASON}}` - reason why listing is not available anymore
   - `offered` - official offer using Carousell's offer button (placeholders available)
     - `{{OFFER}}` - offer value
   - `posssible_offer` - offer value detected from previously sent message (placeholders available)
@@ -123,7 +125,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
 - `reminders` - list of hours to set reminders for on every deal (optional, leave empty if none)
 - `command_prefix` - prefix to use for the app to detect as a command
 - `state_prune` - number of days to keep items in state after last activity
-- `forwarders` - list of forwarders (optional, leave empty if none)
+- `forwarders` - list of forwarders (optional, `[]` if none)
   - for `telegram` (guide: https://core.telegram.org/bots):
     - ```yaml
       - type: telegram

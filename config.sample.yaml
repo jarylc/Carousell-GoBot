@@ -19,11 +19,13 @@ message_templates: # message templates
   initial: |- # new chat initial greeting
     Hello @{{NAME}}!
 
-    Thanks for your interest in my item {{ITEM}}
+    Thanks for your interest in my item `{{ITEM}}`
 
     Do take a look at the FAQ sent above if you have any questions
 
     I will try to get back to you in person as soon as possible!
+  not_available: |- # chat message on a listing that is sold, reserved or deleted
+    Please note that this listing might not be available anymore as it was {{REASON}}.
   offered: |- # official offer using Carousell's offer button
     Thank you for your offer of ${{OFFER}}!
   possible_offer: |- # offer value detected from previously sent message
