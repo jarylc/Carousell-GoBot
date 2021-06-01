@@ -43,7 +43,7 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 	}
 
 	switch cmd {
-	case "sched", "schedule", "remind", "reminder", "deal": // schedule
+	case "sched", "schedule", "remind", "reminder", "deal": // confirm deal
 		var c chrono.Chrono
 		c, err = chrono.New()
 		if err != nil {
@@ -73,6 +73,10 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 		} else {
 			return errors.New("ERROR: Unable to parse date from messages")
 		}
+	case "cancel", "del", "delete": // delete deal
+		cState.DealOn = time.Time{}
+		CancelReminders(cState)
+		messaging.SendMessage("Deal cancelled.")
 	case "faq": // resend faq
 		messaging.SendMessage(config.Config.MessageTemplates.FAQ)
 	}

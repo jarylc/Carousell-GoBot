@@ -36,15 +36,20 @@ func AddReminders(cState *models.State) {
 	}
 
 	// cancel existing reminders
+	CancelReminders(cState)
+
+	for _, offset := range config.Config.Reminders {
+		addReminder(cState, offset)
+	}
+}
+
+// CancelReminders - cancel all reminders for a state
+func CancelReminders(cState *models.State) {
 	cReminders, exist := reminders[cState.ID]
 	if exist {
 		for _, reminders := range cReminders {
 			reminders.Cancel()
 		}
-	}
-
-	for _, offset := range config.Config.Reminders {
-		addReminder(cState, offset)
 	}
 }
 

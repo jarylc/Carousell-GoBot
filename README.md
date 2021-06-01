@@ -174,10 +174,11 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
       ```
 ### Commands (prefixed with command_prefix configuration)
 Currently, only your account can send these commands:
-- `deal` - schedule a deal and set reminders based on reminders configuration
+- `sched`/`schedule`/`remind`/`reminder`/`deal` - schedule a deal and set reminders based on reminders configuration
   - arguments: date/day and time (optional)
   - if no arguments, it will read the most recent reply and response
   - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
+- `cancel`/`del`/`delete` - cancel deal & reminders
 - `faq` - resend the FAQ
 
 ## Roadmap
