@@ -180,6 +180,7 @@ Currently, only your account can send these commands:
   - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
 - `cancel`/`del`/`delete` - cancel deal & reminders
 - `faq` - resend the FAQ
+- `stop` - immediately stop the bot
 
 ## Roadmap
 See the [open issues](https://gitlab.com/jarylc/carousell-gobot/-/issues) for a list of proposed features (and known

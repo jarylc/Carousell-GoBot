@@ -22,9 +22,10 @@ var ws *websocket.Conn
 var mutex sync.Mutex
 var mutexLocked = false
 
+var interrupt = make(chan os.Signal, 1)
+
 // Connect - return websocket connection, if not create it
 //nolint:funlen,gocognit
-
 func Connect() *websocket.Conn {
 	mutex.Lock()
 	mutexLocked = true
@@ -34,7 +35,6 @@ func Connect() *websocket.Conn {
 		return ws
 	}
 
-	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 
 	userID, err := getUserIDFromCacheOrCookie()

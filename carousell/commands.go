@@ -11,6 +11,7 @@ import (
 	"github.com/dlclark/regexp2"
 	"log"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -79,6 +80,8 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 		messaging.SendMessage("Deal cancelled.")
 	case "faq": // resend faq
 		messaging.SendMessage(config.Config.MessageTemplates.FAQ)
+	case "stop": // stop bot
+		interrupt <- syscall.SIGINT
 	}
 
 	return nil
