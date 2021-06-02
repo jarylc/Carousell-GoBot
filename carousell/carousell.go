@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -35,7 +36,7 @@ func Connect() *websocket.Conn {
 		return ws
 	}
 
-	signal.Notify(interrupt, os.Interrupt)
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
 	userID, err := getUserIDFromCacheOrCookie()
 	if err != nil {

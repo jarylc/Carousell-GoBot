@@ -55,7 +55,6 @@ carousell-gobot:
       - TZ=UTC
     volumes:
       - /path/to/config/folder:/data
-    restart: unless-stopped
 ```
 
 
