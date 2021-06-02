@@ -1,6 +1,7 @@
 package carousell
 
 import (
+	"carousell-gobot/constants"
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
 	"carousell-gobot/messaging"
@@ -24,23 +25,28 @@ func InitReminders() {
 		if initial {
 			continue
 		}
-		AddReminders(cState)
+		_ = AddReminders(cState)
 	}
 }
 
 // AddReminders - add all reminders from config and a single state
-func AddReminders(cState *models.State) {
+func AddReminders(cState *models.State) []time.Time {
 	deal := cState.DealOn
 	if deal.Before(time.Now()) { // ignore if deal date is before today
-		return
+		return nil
 	}
 
 	// cancel existing reminders
 	CancelReminders(cState)
 
+	var reminderTimes []time.Time
 	for _, offset := range config.Config.Reminders {
-		addReminder(cState, offset)
+		reminderTime := addReminder(cState, offset)
+		if !reminderTime.IsZero() {
+			reminderTimes = append(reminderTimes, reminderTime)
+		}
 	}
+	return reminderTimes
 }
 
 // CancelReminders - cancel all reminders for a state
@@ -55,13 +61,13 @@ func CancelReminders(cState *models.State) {
 
 // TODO: leave review message
 // addReminder - add a single reminder using state and offset
-func addReminder(cState *models.State, offsetHours int16) {
+func addReminder(cState *models.State, offsetHours int16) time.Time {
 	mutexReminders.Lock()
 	defer mutexReminders.Unlock()
 
 	reminderTime := cState.DealOn.Add(time.Duration(-offsetHours) * time.Hour)
 	if reminderTime.Before(time.Now()) { // ignore if time after offset is before today
-		return
+		return time.Time{}
 	}
 
 	reminder := models.NewReminder(reminderTime)
@@ -69,7 +75,7 @@ func addReminder(cState *models.State, offsetHours int16) {
 
 	go func(cState *models.State, reminder *models.Reminder) {
 		if debug {
-			log.Printf("Reminder to run for `%s` at: %s", cState.ID, reminder.Time.Format("Monday, 02 January 2006, 03:04:05PM"))
+			log.Printf("Reminder to run for `%s` at: %s", cState.ID, reminder.Time.Format(constants.READABLE_DATE_FORMAT))
 		}
 		select {
 		case <-time.After(time.Until(reminder.Time)):
@@ -93,11 +99,13 @@ func addReminder(cState *models.State, offsetHours int16) {
 			}
 		case <-reminder.ChanCancel:
 			if debug {
-				log.Printf("Reminder cancelled for `%s` at: %s", cState.ID, reminder.Time.Format("Monday, 02 January 2006, 03:04:05PM"))
+				log.Printf("Reminder cancelled for `%s` at: %s", cState.ID, reminder.Time.Format(constants.READABLE_DATE_FORMAT))
 			}
 		}
 		mutexReminders.Lock()
 		delete(reminders, cState.ID)
 		mutexReminders.Unlock()
 	}(cState, reminder)
+
+	return reminderTime
 }

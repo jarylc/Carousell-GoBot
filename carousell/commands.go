@@ -2,6 +2,7 @@ package carousell
 
 import (
 	"carousell-gobot/chrono"
+	"carousell-gobot/constants"
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
 	"carousell-gobot/messaging"
@@ -69,15 +70,22 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 
 		if parse != nil {
 			cState.DealOn = time.Unix(parse.Unix(), 0)
-			AddReminders(cState)
-			messaging.SendMessage(fmt.Sprintf("Deal scheduled on: %s\nReminders set: %shr(s) before", parse.Format("Monday, 02 January 2006, 03:04:05PM"), strings.Trim(strings.Join(strings.Fields(fmt.Sprint(config.Config.Reminders)), "hr(s), "), "[]")))
+			reminderTimes := AddReminders(cState)
+			remindersTimesStr := ""
+			if len(reminderTimes) > 0 {
+				remindersTimesStr = "\n\nReminders will be sent on:"
+				for i, reminderTime := range reminderTimes {
+					remindersTimesStr += fmt.Sprintf("\n%d. %s", i+1, reminderTime.Format(constants.READABLE_DATE_FORMAT))
+				}
+			}
+			messaging.SendMessage(fmt.Sprintf("Deal scheduled on: %s%s", parse.Format(constants.READABLE_DATE_FORMAT), remindersTimesStr))
 		} else {
 			return errors.New("ERROR: Unable to parse date from messages")
 		}
 	case "cancel", "del", "delete": // delete deal
 		cState.DealOn = time.Time{}
 		CancelReminders(cState)
-		messaging.SendMessage("Deal cancelled.")
+		messaging.SendMessage("Deal cancelled, reminders unscheduled.")
 	case "faq": // resend faq
 		messaging.SendMessage(config.Config.MessageTemplates.FAQ)
 	case "stop": // stop bot
