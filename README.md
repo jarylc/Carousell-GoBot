@@ -16,14 +16,19 @@ A Carousell.sg automation bot written in Golang
 ### Demo
 #### Initial auto-reply
 ![Initial auto-reply](readme/demo-initial.gif)
+
 #### Low-balling detection
 ![Low-balling detection](readme/demo-lowball.gif)
+
 #### Lower official offer detection
 ![Lower official offer detection](readme/demo-loweroffer.gif)
+
 #### Reminders & Commands
 ![Reminders & Commands](readme/demo-reminder.jpg)
+
 #### Forwarding to other chat services
 ![Forwarding to other chat services](readme/demo-forwarding.jpg)
+
 ### Built With
 * [golang](https://golang.org/)
 * [gorrilla/websocket](https://github.com/gorilla/websocket)
@@ -34,11 +39,13 @@ A Carousell.sg automation bot written in Golang
 
 ## Getting Started
 To get a local copy up and running follow these simple steps.
+
 ### Docker (recommended)
 #### 1. Prepare configuration file
 1. [Click here to download the latest sample config](https://gitlab.com/jarylc/carousell-gobot/-/raw/master/config.sample.yaml?inline=false)
 2. Rename `config.sample.yaml` to `config.yaml`
 3. Edit `config.yaml` with your configurations (breakdown below)
+
 #### 2a. Docker Run
 ```shell
 docker run -it -d \
@@ -47,6 +54,7 @@ docker run -it -d \
   -v /path/to/config/folder:/data \
   jarylc/carousell-gobot
 ```
+
 #### 2b. Docker-compose
 ```docker-compose
 carousell-gobot:
@@ -56,7 +64,6 @@ carousell-gobot:
     volumes:
       - /path/to/config/folder:/data
 ```
-
 
 ### Binaries
 1. [Visit here to view and download the latest build artifacts](https://gitlab.com/jarylc/carousell-gobot/-/jobs/artifacts/master/browse?job=build) / Alternatively, build it yourself with instructions below
@@ -73,11 +80,13 @@ carousell-gobot:
 $ cd /path/to/project/folder
 $ go build -ldflags="-w -s"
 ```
+
 ### Building for 64-bit Windows
 ```shell
 $ cd /path/to/project/folder
 $ GOOS=windows GOARCH=amd64 go build -ldflags="-w -s"
 ```
+
 ### Docker build
 ```shell
 $ cd /path/to/project/folder
@@ -88,18 +97,21 @@ $ docker build .
 ### Get Carousell.sg Cookie
 #### Firefox
 1. Go to https://www.carousell.sg/
-2. Press `CTRL+SHIFT+E` (Windows) / `⌘+⌥+E` (Mac)
+2. Press `CTRL+SHIFT+E` / `⌘+⌥+E`
 3. Refresh the page
 4. ![Firefox Final Step](readme/cookie-firefox.png)
+
 #### Chrome
 1. Go to https://www.carousell.sg/
-2. Press `CTRL+SHIFT+C` (Windows) / `⌘+⌥+C` (Mac)
+2. Press `CTRL+SHIFT+C` / `⌘+⌥+C`
 3. Click on `Network` tab
 4. Refresh the page
 5. ![Chrome Final Step](readme/cookie-chrome.png)
+
 ### Configuration
 #### Sample
 https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
+
 #### Breakdown
 - `carousell` - Carousell related configurations
   - `cookie` - entire value inside Cookie header from above
@@ -114,7 +126,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
     - `{{REASON}}` - reason why listing is not available anymore
   - `offered` - official offer using Carousell's offer button (placeholders available)
     - `{{OFFER}}` - offer value
-  - `posssible_offer` - offer value detected from previously sent message (placeholders available)
+  - `possible_offer` - offer value detected from previously sent message (placeholders available)
     - `{{OFFER}}` - offer value
   - `lower_offer` - official offer value was decreased from possible offer, buyer being cheeky?
   - `low_balled` - low-balled (placeholders available)
@@ -171,6 +183,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
           <https://www.carousell.sg/inbox/{{ID}}|{{ITEM}}>
           Deal ${{OFFER}} in {{HOURS}} hour(s)!
       ```
+
 ### Commands (prefixed with command_prefix configuration)
 Currently, only your account can send these commands:
 - `sched`/`schedule`/`remind`/`reminder`/`deal` - schedule a deal and set reminders based on reminders configuration
@@ -180,6 +193,7 @@ Currently, only your account can send these commands:
 - `cancel`/`del`/`delete` - cancel deal & reminders
 - `faq` - resend the FAQ
 - `stop` - immediately stop the bot
+
 
 ## Roadmap
 See the [open issues](https://gitlab.com/jarylc/carousell-gobot/-/issues) for a list of proposed features (and known
