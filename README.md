@@ -23,11 +23,12 @@ A Carousell.sg automation bot written in Golang
 #### Lower official offer detection
 ![Lower official offer detection](readme/demo-loweroffer.gif)
 
-#### Reminders & Commands
-![Reminders & Commands](readme/demo-reminder.jpg)
-
 #### Forwarding to other chat services
 ![Forwarding to other chat services](readme/demo-forwarding.jpg)
+
+#### Reminders & Commands
+![Reminders & Commands](readme/demo-reminder.gif) ![Reminders](readme/demo-reminder.jpg)
+
 
 ### Built With
 * [golang](https://golang.org/)
