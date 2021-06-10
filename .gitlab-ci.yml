@@ -24,9 +24,6 @@ build:
   stage: build
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-  only:
-    - pushes
-    - master
   before_script:
     - ./ci-prepare.sh
   script:
@@ -39,9 +36,7 @@ build:
 deploy-nightly:
   stage: deploy
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-  only:
-    - develop
+    - if: '$CI_COMMIT_BRANCH == "develop"'
   image: docker:stable
   services:
     - name: docker:stable-dind
@@ -53,8 +48,8 @@ deploy-nightly:
 
 deploy-latest:
   stage: deploy
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   image: docker:stable
   services:
     - name: docker:stable-dind
