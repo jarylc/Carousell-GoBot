@@ -88,6 +88,8 @@ func handleCommand(messaging messaging.Carousell, info responses.MessageInfo, ms
 		messaging.SendMessage("Deal cancelled, reminders unscheduled.")
 	case "faq": // resend faq
 		messaging.SendMessage(config.Config.MessageTemplates.FAQ)
+	case "contact": // send contact details
+		messaging.SendMessage(config.Config.MessageTemplates.Contact)
 	case "stop": // stop bot
 		interrupt <- syscall.SIGINT
 	}

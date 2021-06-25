@@ -14,6 +14,7 @@ type Config struct {
 		PossibleOffer string `yaml:"possible_offer"`
 		LowerOffer    string `yaml:"lower_offer"`
 		LowBalled     string `yaml:"low_balled"`
+		Contact       string `yaml:"contact"`
 		Reminder      string `yaml:"reminder"`
 	} `yaml:"message_templates"`
 	Reminders     []int16 `yaml:"reminders"`
@@ -50,6 +51,7 @@ func DefaultConfig() *Config {
 			PossibleOffer string `yaml:"possible_offer"`
 			LowerOffer    string `yaml:"lower_offer"`
 			LowBalled     string `yaml:"low_balled"`
+			Contact       string `yaml:"contact"`
 			Reminder      string `yaml:"reminder"`
 		}{
 			FAQ:           "",
@@ -59,6 +61,7 @@ func DefaultConfig() *Config {
 			PossibleOffer: "It looks like you are making an offer of ${{OFFER}}.",
 			LowerOffer:    "WARNING: Offer was lowered!",
 			LowBalled:     "WARNING: Your offer is {{PERCENT}}% below listing price, it's pretty low!",
+			Contact:       "I can only be contacted on Carousell.",
 			Reminder:      "REMINDER: We are dealing this in {{HOURS}} hour(s)!",
 		},
 		Reminders:     []int16{1, 4, 24},

@@ -6,6 +6,7 @@ import (
 	"carousell-gobot/messaging"
 	"carousell-gobot/models/responses"
 	"carousell-gobot/utils"
+	"errors"
 	"fmt"
 	"github.com/dlclark/regexp2"
 	"github.com/gorilla/websocket"
@@ -30,8 +31,6 @@ var interrupt = make(chan os.Signal, 1)
 // Connect - return websocket connection, if not create it
 //nolint:funlen,gocognit
 func Connect() *websocket.Conn {
-	consecErrors := 0
-
 	mutex.Lock()
 	mutexLocked = true
 	if ws != nil {
@@ -46,11 +45,20 @@ func Connect() *websocket.Conn {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			for _, forwarder := range messaging.Forwarders {
+				_ = forwarder.ProcessMessage(fmt.Sprintf("Carousell-GoBot exited for ID `%s`", userID))
+			}
+			os.Exit(1)
+		}
+	}()
 main:
 	for {
 		token, err := getToken()
 		if err != nil {
-			log.Fatalln(err)
+			log.Panic(err)
 		}
 		query := strings.ReplaceAll(constants.QUERY, "{{CHANNEL}}", strings.ToUpper(constants.CHANNEL))
 		query = strings.ReplaceAll(query, "{{USERID}}", userID)
@@ -72,14 +80,6 @@ main:
 			for {
 				_, message, err := ws.ReadMessage()
 				if err != nil {
-					if consecErrors >= 5 {
-						for _, forwarder := range messaging.Forwarders {
-							forwarder.SendMessage(fmt.Sprintf("Carousell-GoBot failed 5 consecutive times for ID `%s`", userID))
-						}
-						log.Fatalln("error: exceeded 5 consec errors, exiting...")
-					}
-					consecErrors++
-
 					log.Println(err)
 					return
 				}
@@ -88,7 +88,6 @@ main:
 					log.Println(err)
 					return
 				}
-				consecErrors = 0
 			}
 		}()
 		log.Println("Chat connected")
@@ -185,6 +184,9 @@ func getToken() (string, error) {
 	err := utils.HTTPGet(constants.CAROUSELL_URL_TOKEN, &token)
 	if err != nil {
 		return "", err
+	}
+	if token.Data.Token == "" {
+		return "", errors.New("unable to get chat token, likely invalid or expired cookie, please enter a new one")
 	}
 
 	return token.Data.Token, nil
