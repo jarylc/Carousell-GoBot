@@ -3,8 +3,10 @@ package carousell
 import (
 	"carousell-gobot/constants"
 	"carousell-gobot/data/config"
+	"carousell-gobot/messaging"
 	"carousell-gobot/models/responses"
 	"carousell-gobot/utils"
+	"fmt"
 	"github.com/dlclark/regexp2"
 	"github.com/gorilla/websocket"
 	"log"
@@ -28,6 +30,8 @@ var interrupt = make(chan os.Signal, 1)
 // Connect - return websocket connection, if not create it
 //nolint:funlen,gocognit
 func Connect() *websocket.Conn {
+	consecErrors := 0
+
 	mutex.Lock()
 	mutexLocked = true
 	if ws != nil {
@@ -68,6 +72,14 @@ main:
 			for {
 				_, message, err := ws.ReadMessage()
 				if err != nil {
+					if consecErrors >= 5 {
+						for _, forwarder := range messaging.Forwarders {
+							forwarder.SendMessage(fmt.Sprintf("Carousell-GoBot failed 5 consecutive times for ID `%s`", userID))
+						}
+						log.Fatalln("error: exceeded 5 consec errors, exiting...")
+					}
+					consecErrors++
+
 					log.Println(err)
 					return
 				}
@@ -76,6 +88,7 @@ main:
 					log.Println(err)
 					return
 				}
+				consecErrors = 0
 			}
 		}()
 		log.Println("Chat connected")
@@ -94,6 +107,7 @@ main:
 					time.Sleep(5 * time.Second)
 					continue main
 				}
+
 			case <-interrupt:
 				log.Println("Gracefully shutting down...")
 				pinger.Stop()
