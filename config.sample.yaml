@@ -36,7 +36,7 @@ message_templates: # message templates
     WARNING: Offer was lowered!
   low_balled: |- # low-balled
     WARNING: Your offer is {{PERCENT}}% below listing price, it's pretty low!
-  contact: |- # contact details command
+  contact: |- # contact details reply for contact command
     My contact details:
       Mobile: +6591234567
       WhatsApp: https://api.whatsapp.com/send?phone=6591234567

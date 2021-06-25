@@ -2,7 +2,7 @@
 
 # Carousell GoBot
 A Carousell.sg automation bot written in Golang
-> WARNING: ALPHA RELEASES ONLY. Expect bugs and possibly breaking changes every update.
+> WARNING: NIGHTLY RELEASES ONLY. Expect bugs and possibly breaking changes every update.
 
 [**Docker Hub Image »**](https://hub.docker.com/r/jarylc/carousell-gobot)
 
@@ -51,7 +51,7 @@ To get a local copy up and running follow these simple steps.
 ```shell
 docker run -it -d \
   --name carousell-gobot \
-  -e TZ=UTC \
+  -e TZ=Asia/Singapore \
   -v /path/to/config/folder:/data \
   jarylc/carousell-gobot
 ```
@@ -61,7 +61,7 @@ docker run -it -d \
 carousell-gobot:
     image: jarylc/carousell-gobot
     environment:
-      - TZ=UTC
+      - TZ=Asia/Singapore
     volumes:
       - /path/to/config/folder:/data
 ```
@@ -132,6 +132,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
   - `lower_offer` - official offer value was decreased from possible offer, buyer being cheeky?
   - `low_balled` - low-balled (placeholders available)
     - `{{PERCENT}}` - low-ball percent configured in configuration in percent notation
+  - `contact` - contact details reply for contact command
   - `reminder` - reminder (placeholders available)
     - `{{HOURS}}' - hours remaining till scheduled time
 - `reminders` - list of hours to set reminders for on every deal (optional, leave empty if none)
@@ -193,6 +194,7 @@ Currently, only your account can send these commands:
   - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
 - `cancel`/`del`/`delete` - cancel deal & reminders
 - `faq` - resend the FAQ
+- `contact` - send contact details
 - `stop` - immediately stop the bot
 
 
