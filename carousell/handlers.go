@@ -18,7 +18,7 @@ import (
 func handleSelling(carousellMessaging messaging.Carousell, info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
 	var cState, initial = state.Get(data.OfferID)
 
-	toForward := false
+	toForward := true
 	var price float64
 	var flags []string
 
@@ -41,20 +41,21 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 				reply = strings.ReplaceAll(reply, "{{ITEM}}", info.Product.Title)
 				carousellMessaging.SendMessage(reply)
 
-				toForward = true
 				flags = append(flags, constants.NEW_CHAT)
+
+				if info.IsProductSold || info.Product.Status == "R" || info.Product.Status == "D" {
+					reason := "sold"
+					if info.Product.Status == "R" {
+						reason = "reserved"
+					} else if info.Product.Status == "D" {
+						reason = "deleted"
+					}
+					carousellMessaging.SendMessage(strings.ReplaceAll(config.Config.MessageTemplates.NotAvailable, "{{REASON}}", reason))
+					toForward = false
+				}
 			}
 
 			switch {
-			case info.IsProductSold || info.Product.Status == "R" || info.Product.Status == "D": // product sold, reserved or deleted
-				reason := "sold"
-				if info.Product.Status == "R" {
-					reason = "reserved"
-				} else if info.Product.Status == "D" {
-					reason = "deleted"
-				}
-				carousellMessaging.SendMessage(strings.ReplaceAll(config.Config.MessageTemplates.NotAvailable, "{{REASON}}", reason))
-				toForward = false
 			case info.LatestPriceFormatted == "0" || info.State == "D" || info.State == "C" || debug: // official offer price $0, offer was declined or cancelled
 				if info.State != "A" { // not accepted yet
 					price, err = utils.GetPriceFromMessage(msg.Message)
@@ -65,8 +66,8 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 					if err != nil {
 						return err
 					}
-					if sent {
-						toForward = true
+					if !sent {
+						toForward = false
 					}
 				}
 			default:
@@ -100,7 +101,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 
 	if toForward && !contains(flags, constants.SUPER_LOW_BALL) {
 		for i, forwarder := range messaging.Forwarders {
-			forward := strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Standard, "{{NAME}}", forwarder.Escape(msg.User.Name))
+			forward := strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Standard, "{{NAME}}", forwarder.Escape(info.User.Username))
 			forward = strings.ReplaceAll(forward, "{{ITEM}}", forwarder.Escape(info.Product.Title))
 			forward = strings.ReplaceAll(forward, "{{ID}}", data.OfferID)
 			forward = strings.ReplaceAll(forward, "{{OFFER}}", fmt.Sprintf("%.02f", price))
@@ -137,7 +138,7 @@ func handleBuying(carousellMessaging messaging.Carousell, info responses.Message
 		if err != nil {
 			return err
 		}
-		if msg.User.GuestID != userID && msg.User.Name != "" { // by other party
+		if msg.User.GuestID != userID { // by other party
 			cState.LastReceived = msg.Message
 		} else {
 			cState.LastSent = msg.Message
