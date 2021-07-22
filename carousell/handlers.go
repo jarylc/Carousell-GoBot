@@ -80,6 +80,8 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			if err != nil {
 				return err
 			}
+
+			toForward = false
 		}
 	case constants.MAKE_OFFER:
 		price, err := strconv.ParseFloat(data.OfferAmount, 64)
@@ -94,8 +96,6 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			carousellMessaging.SendMessage(config.Config.MessageTemplates.LowerOffer)
 			flags = append(flags, constants.LOWERED)
 		}
-
-		toForward = true
 		flags = append(flags, constants.OFFICIAL)
 	}
 
