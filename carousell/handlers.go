@@ -66,7 +66,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 					if err != nil {
 						return err
 					}
-					if !sent {
+					if !initial && !sent {
 						toForward = false
 					}
 				}
