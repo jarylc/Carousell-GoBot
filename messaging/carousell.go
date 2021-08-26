@@ -3,7 +3,6 @@ package messaging
 import (
 	"carousell-gobot/constants"
 	"carousell-gobot/data/config"
-	"carousell-gobot/models"
 	"carousell-gobot/models/requests"
 	"carousell-gobot/models/responses"
 	"carousell-gobot/utils"
@@ -74,11 +73,10 @@ func (m Carousell) SendMessage(text string) {
 
 // UTILITIES
 
-func (m Carousell) CheckAndSendPriceMessage(info responses.MessageInfo, msg responses.Message, cState *models.State, flags *[]string, price float64) (bool, error) {
+func (m Carousell) CheckAndSendPriceMessage(info responses.MessageInfo, msg responses.Message, flags *[]string, price float64) (bool, error) {
 	if price == 0 {
 		return false, nil
 	}
-	cState.Price = price
 
 	reply := ""
 	if msg.CustomType == constants.MAKE_OFFER {

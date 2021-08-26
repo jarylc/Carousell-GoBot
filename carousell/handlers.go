@@ -59,7 +59,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 					if err != nil {
 						return err
 					}
-					sent, err := carousellMessaging.CheckAndSendPriceMessage(info, msg, cState, &flags, cState.Price)
+					sent, err := carousellMessaging.CheckAndSendPriceMessage(info, msg, &flags, cState.Price)
 					if err != nil {
 						return err
 					}
@@ -83,7 +83,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 		if err != nil {
 			return err
 		}
-		_, err = carousellMessaging.CheckAndSendPriceMessage(info, msg, cState, &flags, price)
+		_, err = carousellMessaging.CheckAndSendPriceMessage(info, msg, &flags, price)
 		if err != nil {
 			return err
 		}
