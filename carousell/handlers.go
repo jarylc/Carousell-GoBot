@@ -16,6 +16,8 @@ import (
 
 //nolint:gocognit, funlen
 func handleSelling(carousellMessaging messaging.Carousell, info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
+	var err error
+
 	var cState, initial = state.Get(data.OfferID)
 
 	toForward := true
@@ -28,11 +30,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 
 	switch msg.CustomType {
 	case constants.MESSAGE:
-		userID, err := getUserIDFromCacheOrCookie()
-		if err != nil {
-			return err
-		}
-		if msg.User.GuestID != userID { // by other party
+		if msg.User.Name != "" { // by other party
 			cState.LastReceived = msg.Message
 			if initial {
 				carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
@@ -75,12 +73,10 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			}
 		} else { // by myself
 			cState.LastSent = msg.Message
-
 			err = handleCommand(carousellMessaging, info, msg, data)
 			if err != nil {
 				return err
 			}
-
 			toForward = false
 		}
 	case constants.MAKE_OFFER:
@@ -122,15 +118,12 @@ func contains(s []string, e string) bool {
 }
 
 func handleBuying(carousellMessaging messaging.Carousell, info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
+	var err error
+
 	var cState, _ = state.Get(data.OfferID)
 	cState.ID = data.OfferID
 	cState.Name = info.Product.Title
 	cState.LastActivity = time.Now()
-
-	userID, err := getUserIDFromCacheOrCookie()
-	if err != nil {
-		return err
-	}
 
 	switch msg.CustomType {
 	case constants.MESSAGE:
@@ -138,7 +131,7 @@ func handleBuying(carousellMessaging messaging.Carousell, info responses.Message
 		if err != nil {
 			return err
 		}
-		if msg.User.GuestID != userID { // by other party
+		if msg.User.Name != "" { // by other party
 			cState.LastReceived = msg.Message
 		} else {
 			cState.LastSent = msg.Message
