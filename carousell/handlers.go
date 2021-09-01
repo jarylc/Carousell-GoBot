@@ -16,8 +16,6 @@ import (
 
 //nolint:gocognit, funlen
 func handleSelling(carousellMessaging messaging.Carousell, info responses.MessageInfo, msg responses.Message, data responses.MessageData) error {
-	var err error
-
 	var cState, initial = state.Get(data.OfferID)
 
 	var flags []string
@@ -28,7 +26,11 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 
 	switch msg.CustomType {
 	case constants.MESSAGE:
-		if msg.User.Name != "" { // by other party
+		userID, err := getUserIDFromCacheOrCookie()
+		if err != nil {
+			return err
+		}
+		if msg.User.GuestID != userID { // by other party
 			cState.LastReceived = msg.Message
 			if initial {
 				carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
@@ -117,11 +119,16 @@ func handleBuying(carousellMessaging messaging.Carousell, info responses.Message
 
 	switch msg.CustomType {
 	case constants.MESSAGE:
+		userID, err = getUserIDFromCacheOrCookie()
+		if err != nil {
+			return err
+		}
+
 		cState.Price, err = utils.GetPriceFromMessage(msg.Message)
 		if err != nil {
 			return err
 		}
-		if msg.User.Name != "" { // by other party
+		if msg.User.GuestID != userID { // by other party
 			cState.LastReceived = msg.Message
 		} else {
 			cState.LastSent = msg.Message
