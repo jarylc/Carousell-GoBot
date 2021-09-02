@@ -21,8 +21,6 @@ test:
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
       when: never
     - if: '$CI_COMMIT_BRANCH'
-  before_script:
-    - ./ci-prepare.sh
   script:
     - CGO_ENABLED=0 go test ./...
 
