@@ -1,7 +1,6 @@
 package carousell
 
 import (
-	"carousell-gobot/chrono"
 	"carousell-gobot/constants"
 	"carousell-gobot/data/config"
 	"carousell-gobot/data/state"
@@ -10,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dlclark/regexp2"
+	"github.com/jarylc/go-chrono/v2"
 	"log"
 	"strings"
 	"syscall"

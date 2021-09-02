@@ -30,8 +30,6 @@ build:
   stage: build
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-  before_script:
-    - ./ci-prepare.sh
   script:
     - ./ci-build.sh
   artifacts:
@@ -47,8 +45,6 @@ deploy-nightly:
   services:
     - name: docker:stable-dind
       command: [ "--experimental" ]
-  before_script:
-    - ./ci-prepare.sh
   script:
     - ./ci-deploy.sh nightly
 
@@ -60,7 +56,5 @@ deploy-latest:
   services:
     - name: docker:stable-dind
       command: [ "--experimental" ]
-  before_script:
-    - ./ci-prepare.sh
   script:
     - ./ci-deploy.sh latest
