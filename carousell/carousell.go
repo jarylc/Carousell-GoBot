@@ -183,7 +183,7 @@ func getUserIDFromCacheOrCookie() (string, error) {
 		return "", err
 	}
 
-	if cUserID.String() == ";" {
+	if cUserID.String() == "" {
 		return "", errors.New("unable to find user ID in cookie")
 	}
 
@@ -280,7 +280,7 @@ func login() (string, error) {
 		err := chromedp.Run(ctx, chromedp.Tasks{
 			chromedp.WaitVisible(`input[name="verification code"]`),
 			chromedp.ActionFunc(func(ctx context.Context) error {
-				msg := fmt.Sprintf("2FA required, please solve it: %s/?id=%s.", config.Config.Application.BaseURL, targetID)
+				msg := fmt.Sprintf("2FA required, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
 				log.Print(msg)
 				messaging.Announce(msg)
 				return nil

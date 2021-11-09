@@ -28,10 +28,6 @@ func Load(path string) error {
 		return err
 	}
 
-	if !strings.HasSuffix(Config.Carousell.Cookie, ";") {
-		Config.Carousell.Cookie += ";"
-	}
-
 	return nil
 }
 

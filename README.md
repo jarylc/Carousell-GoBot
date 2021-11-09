@@ -55,6 +55,7 @@ docker run -it -d \
   --name carousell-gobot \
   -e TZ=Asia/Singapore \
   -e INSTALL_CHROME=1 `# OPTIONAL: install Chromium before start for username & password login support` \
+  -p 9221:9221 `# OPTIONAL: configured forward port for front-end portal (for 2FA & Captcha entries)` \
   -v /path/to/config/folder:/data \
   jarylc/carousell-gobot
 ```
@@ -66,6 +67,8 @@ carousell-gobot:
     environment:
       - TZ=Asia/Singapore
       - INSTALL_CHROME=1 # OPTIONAL: install Chromium before start for username & password login support
+    ports:
+      - "9221:9221" # OPTIONAL: configured forward port for front-end portal (for 2FA & Captcha entries)
     volumes:
       - /path/to/config/folder:/data
 ```

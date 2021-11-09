@@ -2,9 +2,9 @@ package models
 
 type Config struct {
 	Application struct {
-		BaseURL        string `json:"base_url"`
-		PortalListener string `json:"portal_listener"`
-		ChromeListener string `json:"chrome_listener"`
+		BaseURL        string `yaml:"base_url"`
+		PortalListener string `yaml:"portal_listener"`
+		ChromeListener string `yaml:"chrome_listener"`
 	} `yaml:"application"`
 	Carousell struct {
 		Cookie       string  `yaml:"cookie"`
@@ -42,9 +42,9 @@ type Config struct {
 func DefaultConfig() *Config {
 	return &Config{
 		Application: struct {
-			BaseURL        string `json:"base_url"`
-			PortalListener string `json:"portal_listener"`
-			ChromeListener string `json:"chrome_listener"`
+			BaseURL        string `yaml:"base_url"`
+			PortalListener string `yaml:"portal_listener"`
+			ChromeListener string `yaml:"chrome_listener"`
 		}{
 			BaseURL:        "http://localhost:9221",
 			PortalListener: "0.0.0.0:9221",
