@@ -24,28 +24,28 @@ func main() {
 		log.Println("DEBUG MODE ACTIVE!")
 	}
 
-	log.Println("Loading config...")
+	log.Println("loading config...")
 	err := config.Load(configPath)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println("Config loaded")
+	log.Println("config loaded")
 
-	log.Println("Loading state...")
+	log.Println("loading state...")
 	err = state.Load(statePath)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Println("State loaded")
+	log.Println("state loaded")
 
-	log.Println("Loading forwarders...")
+	log.Println("loading forwarders...")
 	messaging.LoadForwarders()
-	log.Println("Forwarders loaded")
+	log.Println("forwarders loaded")
 
-	log.Println("Initiating reminders system")
+	log.Println("initiating reminders system")
 	carousell.InitReminders()
-	log.Println("Reminder system initiated")
+	log.Println("reminder system initiated")
 
-	log.Println("Connecting to chat...")
+	log.Println("connecting to chat...")
 	_ = carousell.Connect()
 }

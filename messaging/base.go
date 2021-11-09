@@ -45,3 +45,9 @@ func LoadForwarders() {
 		}
 	}
 }
+
+func Announce(msg string) {
+	for _, forwarder := range Forwarders {
+		_ = forwarder.ProcessMessage("Carousell-GoBot Alerts\n" + msg)
+	}
+}
