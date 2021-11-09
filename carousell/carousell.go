@@ -240,7 +240,12 @@ func login() (string, error) {
 	}
 	ch := make(chan result, 1)
 
-	chromedpproxy.PrepareProxy(config.Config.Application.ChromeListener, config.Config.Application.PortalListener, chromedp.NoSandbox)
+	chromedpproxy.PrepareProxy(config.Config.Application.ChromeListener, config.Config.Application.PortalListener,
+		chromedp.NoSandbox,
+		chromedp.DisableGPU,
+		chromedp.Flag("disable-dev-shm-usage", true),
+		chromedp.Flag("single-process", true),
+	)
 	targetID, err := chromedpproxy.NewTab("https://www.carousell.sg/login")
 	if err != nil && !errors.Is(err, context.Canceled) {
 		return "", err
