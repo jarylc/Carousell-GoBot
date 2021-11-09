@@ -22,7 +22,7 @@ test:
       when: never
     - if: '$CI_COMMIT_BRANCH'
   script:
-    - go test ./...
+    - CGO_ENABLED=0 go test ./...
 
 build:
   stage: build
