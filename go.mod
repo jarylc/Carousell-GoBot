@@ -9,7 +9,7 @@ require (
 	github.com/dop251/goja v0.0.0-20211022113120-dc8c55024d06 // indirect
 	github.com/gorilla/websocket v1.4.2
 	github.com/jarylc/go-chromedpproxy v0.0.4
-	github.com/jarylc/go-chrono/v2 v2.3.2
+	github.com/jarylc/go-chrono/v2 v2.3.3
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )

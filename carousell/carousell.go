@@ -64,7 +64,9 @@ main:
 	for {
 		token, err := getToken()
 		if err != nil {
-			log.Panicf("error getting token: %s", err)
+			log.Printf("error getting token: %s, retrying in 1 minute...", err)
+			time.Sleep(time.Minute)
+			continue
 		}
 		userID, err := getUserIDFromCacheOrCookie()
 		if err != nil {
