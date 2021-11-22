@@ -282,6 +282,25 @@ func login() (string, error) {
 		}
 	}()
 
+	// reCaptcha is required
+	go func() {
+		err := chromedp.Run(ctx, chromedp.Tasks{
+			chromedp.WaitVisible(`iframe[title="recaptcha challenge expires in two minutes"]`),
+			chromedp.ActionFunc(func(ctx context.Context) error {
+				msg := fmt.Sprintf("reCaptcha detected, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
+				log.Print(msg)
+				messaging.Announce(msg)
+				return nil
+			}),
+		})
+		if err != nil && !errors.Is(err, context.Canceled) {
+			ch <- result{
+				Cookie: "",
+				Error:  err,
+			}
+		}
+	}()
+
 	// 2FA is required
 	go func() {
 		err := chromedp.Run(ctx, chromedp.Tasks{
