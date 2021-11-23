@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"github.com/dlclark/regexp2"
@@ -242,6 +243,8 @@ func login() (string, error) {
 	}
 	ch := make(chan result, 1)
 
+	notified := false
+
 	chromedpproxy.PrepareProxy(config.Config.Application.ChromeListener, config.Config.Application.PortalListener,
 		chromedp.NoSandbox,
 		chromedp.DisableGPU,
@@ -284,12 +287,24 @@ func login() (string, error) {
 
 	// reCaptcha is required
 	go func() {
+		// grab reCaptcha frame
+		var iframes []*cdp.Node
+		err = chromedp.Run(ctx, chromedp.Tasks{
+			chromedp.Nodes(`iframe[title="recaptcha challenge expires in two minutes"]`, &iframes),
+		})
+		if err != nil && !errors.Is(err, context.Canceled) {
+			log.Panic(err)
+		}
+
 		err := chromedp.Run(ctx, chromedp.Tasks{
-			chromedp.WaitVisible(`iframe[title="recaptcha challenge expires in two minutes"]`),
+			chromedp.WaitVisible(`#recaptcha-verify-button`, chromedp.FromNode(iframes[0])),
 			chromedp.ActionFunc(func(ctx context.Context) error {
-				msg := fmt.Sprintf("reCaptcha detected, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
-				log.Print(msg)
-				messaging.Announce(msg)
+				if !notified {
+					notified = true
+					msg := fmt.Sprintf("reCaptcha detected, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
+					log.Print(msg)
+					messaging.Announce(msg)
+				}
 				return nil
 			}),
 		})
@@ -306,9 +321,12 @@ func login() (string, error) {
 		err := chromedp.Run(ctx, chromedp.Tasks{
 			chromedp.WaitVisible(`input[name="verification code"]`),
 			chromedp.ActionFunc(func(ctx context.Context) error {
-				msg := fmt.Sprintf("2FA required, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
-				log.Print(msg)
-				messaging.Announce(msg)
+				if !notified {
+					notified = true
+					msg := fmt.Sprintf("2FA required, please solve it: %s/?id=%s", config.Config.Application.BaseURL, targetID)
+					log.Print(msg)
+					messaging.Announce(msg)
+				}
 				return nil
 			}),
 		})
