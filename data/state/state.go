@@ -117,7 +117,7 @@ func loadPruner() {
 }
 func prune() {
 	if debug {
-		log.Println("Running scheduled state pruning")
+		log.Println("running scheduled state pruning")
 	}
 	mutex.Lock()
 	defer mutex.Unlock()

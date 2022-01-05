@@ -1,6 +1,16 @@
+application:
+  # base URL of front-end portal (to be sent to forwarders on 2FA or Captcha requests)
+  base_url: http://localhost:9221
+  # listen address for front-end
+  portal_listener: 0.0.0.0:9221
+  # listen address for Chrome remote debugger
+  chrome_listener: 127.0.0.1:9222
 carousell:
-  # entire Cookie header from https://carousell.sg
+  # either this or `username` and `password` or both are required, entire Cookie header from https://carousell.sg
   cookie: _t2=..._t=...auth-session=...
+  # either this or `cookie` or both are required, specify username and password for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
+  username: username
+  password: password
   # interval to ping Carousell to check connectivity
   ping_interval: 60
   # percentage of price to be considered low-ball in decimal notation

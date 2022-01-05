@@ -35,7 +35,9 @@ A Carousell.sg automation bot written in Golang
 * [gorrilla/websocket](https://github.com/gorilla/websocket)
 * [dlclark/regexp2](https://github.com/dlclark/regexp2)
 * [dop251/goja](https://github.com/dop251/goja)
-    * [wanasit/chrono](https://github.com/wanasit/chrono)
+  * [jarylc/go-chrono](https://github.com/jarylc/go-chrono)
+      * [wanasit/chrono](https://github.com/wanasit/chrono)
+* [jarylc/go-chromedpproxy](https://github.com/jarylc/go-chromedpproxy)
 
 
 ## Getting Started
@@ -52,6 +54,8 @@ To get a local copy up and running follow these simple steps.
 docker run -it -d \
   --name carousell-gobot \
   -e TZ=Asia/Singapore \
+  -e INSTALL_CHROME=1 `# OPTIONAL: install Chromium before start for username & password login support` \
+  -p 9221:9221 `# OPTIONAL: configured forward port for front-end portal (for 2FA & Captcha entries)` \
   -v /path/to/config/folder:/data \
   jarylc/carousell-gobot
 ```
@@ -62,6 +66,9 @@ carousell-gobot:
     image: jarylc/carousell-gobot
     environment:
       - TZ=Asia/Singapore
+      - INSTALL_CHROME=1 # OPTIONAL: install Chromium before start for username & password login support
+    ports:
+      - "9221:9221" # OPTIONAL: configured forward port for front-end portal (for 2FA & Captcha entries)
     volumes:
       - /path/to/config/folder:/data
 ```
@@ -95,7 +102,7 @@ $ docker build .
 ```
 
 ## Usage
-### Get Carousell.sg Cookie
+### If username and password not specified, get Carousell.sg Cookie
 #### Firefox
 1. Go to https://www.carousell.sg/
 2. Press `CTRL+SHIFT+E` / `⌘+⌥+E`
@@ -108,14 +115,30 @@ $ docker build .
 3. Click on `Network` tab
 4. Refresh the page
 5. ![Chrome Final Step](readme/cookie-chrome.png)
+### Commands (prefixed with command_prefix configuration)
+Currently, only your account can send these commands:
+- `sched`/`schedule`/`remind`/`reminder`/`deal` - schedule a deal and set reminders based on reminders configuration
+  - arguments: date/day and time (optional)
+  - if no arguments, it will read the most recent reply and response
+  - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
+- `cancel`/`del`/`delete` - cancel deal & reminders
+- `faq` - resend the FAQ
+- `contact` - send contact details
+- `stop` - immediately stop the bot
 
 ### Configuration
 #### Sample
 https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
 
 #### Breakdown
+- `application` - application related configurations
+  - `base_url` - base URL of front-end portal (to be sent to forwarders on 2FA or Captcha requests)
+  - `portal_listener` - listen address for front-end
+  - `chrome_listener` - listen address for Chrome remote debugger
 - `carousell` - Carousell related configurations
-  - `cookie` - entire value inside Cookie header from above
+  - `cookie` - either this or `username` and `password` or both are required, entire value inside Cookie header from above
+  - `username` - either this or `cookie` or both are required, specify username for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
+  - `password` - either this or `cookie` or both are required, specify password for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
   - `ping_interval` - interval to ping Carousell to check connectivity
   - `low_ball` - percentage of price to be considered low-ball in decimal notation
 - `message_templates` - message templates
@@ -185,18 +208,7 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
           <https://www.carousell.sg/inbox/{{ID}}|{{ITEM}}>
           Deal ${{OFFER}} in {{HOURS}} hour(s)!
       ```
-
-### Commands (prefixed with command_prefix configuration)
-Currently, only your account can send these commands:
-- `sched`/`schedule`/`remind`/`reminder`/`deal` - schedule a deal and set reminders based on reminders configuration
-  - arguments: date/day and time (optional)
-  - if no arguments, it will read the most recent reply and response
-  - uses natural date processing. ELI5: something like a simple AI to detect dates in sentences.
-- `cancel`/`del`/`delete` - cancel deal & reminders
-- `faq` - resend the FAQ
-- `contact` - send contact details
-- `stop` - immediately stop the bot
-
+      
 
 ## Roadmap
 See the [open issues](https://gitlab.com/jarylc/carousell-gobot/-/issues) for a list of proposed features (and known
