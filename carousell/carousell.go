@@ -263,6 +263,7 @@ func login() (string, error) {
 		chromedp.WaitReady(`.grecaptcha-badge`),
 		chromedp.SendKeys(`input[name="username"]`, config.Config.Carousell.Username, chromedp.NodeVisible),
 		chromedp.SendKeys(`input[name="password"]`, config.Config.Carousell.Password, chromedp.NodeVisible),
+		chromedp.WaitEnabled(`button[type="submit"]`, chromedp.NodeVisible),
 		chromedp.Click(`button[type="submit"]`, chromedp.NodeVisible),
 	})
 	if err != nil && !errors.Is(err, context.Canceled) {
@@ -293,11 +294,14 @@ func login() (string, error) {
 			chromedp.Nodes(`iframe[title="recaptcha challenge expires in two minutes"]`, &iframes),
 		})
 		if err != nil && !errors.Is(err, context.Canceled) {
-			log.Panic(err)
+			ch <- result{
+				Cookie: "",
+				Error:  err,
+			}
 		}
 
 		err := chromedp.Run(ctx, chromedp.Tasks{
-			chromedp.WaitVisible(`#recaptcha-verify-button`, chromedp.FromNode(iframes[0])),
+			chromedp.WaitVisible(`#rc-imageselect`, chromedp.FromNode(iframes[0])),
 			chromedp.ActionFunc(func(ctx context.Context) error {
 				if !notified {
 					notified = true
