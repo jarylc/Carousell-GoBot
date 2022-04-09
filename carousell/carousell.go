@@ -237,19 +237,12 @@ func login() (string, error) {
 	}
 	log.Print("attempting to login using credentials...")
 
-	type result struct {
-		Cookie string
-		Error  error
-	}
-	ch := make(chan result, 1)
-
 	notified := false
 
 	chromedpproxy.PrepareProxy(config.Config.Application.ChromeListener, config.Config.Application.PortalListener,
 		chromedp.NoSandbox,
 		chromedp.DisableGPU,
 		chromedp.Flag("disable-dev-shm-usage", true),
-		chromedp.Flag("single-process", true),
 	)
 	targetID, err := chromedpproxy.NewTab("https://www.carousell.sg/login")
 	if err != nil && !errors.Is(err, context.Canceled) {
@@ -269,6 +262,12 @@ func login() (string, error) {
 	if err != nil && !errors.Is(err, context.Canceled) {
 		return "", err
 	}
+
+	type result struct {
+		Cookie string
+		Error  error
+	}
+	ch := make(chan result, 1)
 
 	// wrong username/password
 	go func() {
