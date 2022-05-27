@@ -1,7 +1,7 @@
 FROM golang:alpine as builder
 WORKDIR /app
 COPY . .
-RUN CGO_ENABLED=0 go build -ldflags="-w -s"
+RUN go build -ldflags="-w -s"
 
 FROM alpine
 ENV UID=1000 \
