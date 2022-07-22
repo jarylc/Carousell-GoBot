@@ -33,23 +33,7 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 		if msg.User.GuestID != userID { // by other party
 			cState.LastReceived = msg.Message
 			if initial {
-				carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
-
-				reply := strings.ReplaceAll(config.Config.MessageTemplates.Initial, "{{NAME}}", info.User.Username)
-				reply = strings.ReplaceAll(reply, "{{ITEM}}", info.Product.Title)
-				carousellMessaging.SendMessage(reply)
-
-				if info.IsProductSold || info.Product.Status == "R" || info.Product.Status == "D" {
-					reason := "sold"
-					if info.Product.Status == "R" {
-						reason = "reserved"
-					} else if info.Product.Status == "D" {
-						reason = "deleted"
-					}
-					carousellMessaging.SendMessage(strings.ReplaceAll(config.Config.MessageTemplates.NotAvailable, "{{REASON}}", reason))
-				} else {
-					flags = append(flags, constants.NEW_CHAT)
-				}
+				processInitial(carousellMessaging, info, flags)
 			}
 
 			// not accepted, official offer price $0, offer was declined or cancelled
@@ -71,6 +55,10 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 			}
 		}
 	case constants.MAKE_OFFER:
+		if initial {
+			processInitial(carousellMessaging, info, flags)
+		}
+
 		price, err := strconv.ParseFloat(data.OfferAmount, 64)
 		if err != nil {
 			return err
@@ -99,6 +87,25 @@ func handleSelling(carousellMessaging messaging.Carousell, info responses.Messag
 	}
 
 	return nil
+}
+func processInitial(carousellMessaging messaging.Carousell, info responses.MessageInfo, flags []string) {
+	carousellMessaging.SendMessage(config.Config.MessageTemplates.FAQ)
+
+	reply := strings.ReplaceAll(config.Config.MessageTemplates.Initial, "{{NAME}}", info.User.Username)
+	reply = strings.ReplaceAll(reply, "{{ITEM}}", info.Product.Title)
+	carousellMessaging.SendMessage(reply)
+
+	if info.IsProductSold || info.Product.Status == "R" || info.Product.Status == "D" {
+		reason := "sold"
+		if info.Product.Status == "R" {
+			reason = "reserved"
+		} else if info.Product.Status == "D" {
+			reason = "deleted"
+		}
+		carousellMessaging.SendMessage(strings.ReplaceAll(config.Config.MessageTemplates.NotAvailable, "{{REASON}}", reason))
+	} else {
+		flags = append(flags, constants.NEW_CHAT)
+	}
 }
 func contains(s []string, e string) bool {
 	for _, a := range s {
