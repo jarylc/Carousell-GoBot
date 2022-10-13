@@ -88,15 +88,17 @@ func addReminder(cState *models.State, offsetHours int16) time.Time {
 			until := time.Until(cState.DealOn)
 			hours := int16(math.Round(until.Hours()))
 
-			message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
-			messaging.NewCarousell(Connect(), cState.ID).SendMessage(message)
+			if hours > 0 {
+				message := strings.ReplaceAll(config.Config.MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
+				messaging.NewCarousell(Connect(), cState.ID).SendMessage(message)
 
-			for i, forwarder := range messaging.Forwarders {
-				message = strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
-				message = strings.ReplaceAll(message, "{{ITEM}}", forwarder.Escape(cState.Name))
-				message = strings.ReplaceAll(message, "{{ID}}", forwarder.Escape(cState.ID))
-				message = strings.ReplaceAll(message, "{{OFFER}}", fmt.Sprintf("%.02f", cState.Price))
-				forwarder.SendMessage(message)
+				for i, forwarder := range messaging.Forwarders {
+					message = strings.ReplaceAll(config.Config.Forwarders[i].MessageTemplates.Reminder, "{{HOURS}}", strconv.Itoa(int(hours)))
+					message = strings.ReplaceAll(message, "{{ITEM}}", forwarder.Escape(cState.Name))
+					message = strings.ReplaceAll(message, "{{ID}}", forwarder.Escape(cState.ID))
+					message = strings.ReplaceAll(message, "{{OFFER}}", fmt.Sprintf("%.02f", cState.Price))
+					forwarder.SendMessage(message)
+				}
 			}
 		case <-reminder.ChanCancel:
 			if debug {
