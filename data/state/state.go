@@ -105,11 +105,15 @@ func loadPruner() {
 	go func() {
 		for {
 			now := time.Now()
+			delay := time.NewTimer(now.Truncate(24*time.Hour).AddDate(0, 0, 1).Sub(now))
 			select {
-			case <-interrupt:
-				return
-			case <-time.After(now.Truncate(24*time.Hour).AddDate(0, 0, 1).Sub(now)):
+			case <-delay.C:
 				prune()
+			case <-interrupt:
+				if !delay.Stop() {
+					<-delay.C
+				}
+				return
 			}
 		}
 	}()

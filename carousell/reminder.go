@@ -77,8 +77,10 @@ func addReminder(cState *models.State, offsetHours int16) time.Time {
 		if debug {
 			log.Printf("Reminder to run for `%s` at: %s", cState.ID, reminder.Time.Format(constants.READABLE_DATE_FORMAT))
 		}
+
+		delay := time.NewTimer(time.Until(reminder.Time))
 		select {
-		case <-time.After(time.Until(reminder.Time)):
+		case <-delay.C:
 			if debug {
 				log.Printf("Reminder ran for `%s`", cState.ID)
 			}
@@ -101,6 +103,9 @@ func addReminder(cState *models.State, offsetHours int16) time.Time {
 				}
 			}
 		case <-reminder.ChanCancel:
+			if !delay.Stop() {
+				<-delay.C
+			}
 			if debug {
 				log.Printf("Reminder cancelled for `%s` at: %s", cState.ID, reminder.Time.Format(constants.READABLE_DATE_FORMAT))
 			}
