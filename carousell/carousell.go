@@ -37,6 +37,7 @@ var mutexLocked = false
 var interrupt = make(chan os.Signal, 1)
 
 // Connect - return websocket connection, if not create it
+//
 //nolint:funlen,gocognit
 func Connect() *websocket.Conn {
 	mutex.Lock()
@@ -253,6 +254,7 @@ func login() (string, error) {
 
 	// input credentials
 	err = chromedp.Run(ctx, chromedp.Tasks{
+		chromedp.Click(`//button[contains(text(), 'username')]`, chromedp.NodeVisible),
 		chromedp.WaitReady(`.grecaptcha-badge`),
 		chromedp.SendKeys(`input[name="username"]`, config.Config.Carousell.Username, chromedp.NodeVisible),
 		chromedp.SendKeys(`input[name="password"]`, config.Config.Carousell.Password, chromedp.NodeVisible),
@@ -272,7 +274,7 @@ func login() (string, error) {
 	// wrong username/password
 	go func() {
 		err := chromedp.Run(ctx, chromedp.Tasks{
-			chromedp.WaitVisible(`//p[contains(text(), 'Wrong username or password')]/..`, chromedp.NodeVisible),
+			chromedp.WaitVisible(`//p[contains(text(), 'Wrong username or password')]`, chromedp.NodeVisible),
 			chromedp.ActionFunc(func(ctx context.Context) error {
 				return errors.New("invalid credentials")
 			}),
