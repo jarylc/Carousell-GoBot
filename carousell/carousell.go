@@ -244,6 +244,7 @@ func login() (string, error) {
 		chromedp.NoSandbox,
 		chromedp.DisableGPU,
 		chromedp.Flag("disable-dev-shm-usage", true),
+		chromedp.UserAgent("Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0"),
 	)
 	targetID, err := chromedpproxy.NewTab("https://www.carousell.sg/login")
 	if err != nil && !errors.Is(err, context.Canceled) {
