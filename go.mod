@@ -8,7 +8,7 @@ require (
 	github.com/dlclark/regexp2 v1.8.1
 	github.com/gorilla/websocket v1.5.0
 	github.com/jarylc/go-chromedpproxy v0.1.1
-	github.com/jarylc/go-chrono/v2 v2.6.1
+	github.com/jarylc/go-chrono/v2 v2.6.4
 	gopkg.in/yaml.v2 v2.4.0
 )
 

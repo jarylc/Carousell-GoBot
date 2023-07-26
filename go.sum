@@ -62,6 +62,8 @@ github.com/jarylc/go-chrono/v2 v2.5.0 h1:PAEKWqTj0N6SC0YrQVE2mjblpPkNdWb8TdpHWnA
 github.com/jarylc/go-chrono/v2 v2.5.0/go.mod h1:UaUJq9yd/BidzM63gTwszWmpviqTwrVza7cQ44i2s2A=
 github.com/jarylc/go-chrono/v2 v2.6.1 h1:xBGGFacOK0TfPxj7HLWzN7iY4u8zzlekH047wopzspo=
 github.com/jarylc/go-chrono/v2 v2.6.1/go.mod h1:UaUJq9yd/BidzM63gTwszWmpviqTwrVza7cQ44i2s2A=
+github.com/jarylc/go-chrono/v2 v2.6.4 h1:oB81uw1cSSRDkbKP2e5wlzGYwM9M9QezXSRcMHRy5CA=
+github.com/jarylc/go-chrono/v2 v2.6.4/go.mod h1:UaUJq9yd/BidzM63gTwszWmpviqTwrVza7cQ44i2s2A=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
 github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
