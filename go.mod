@@ -1,6 +1,6 @@
 module carousell-gobot
 
-go 1.19
+go 1.20
 
 require (
 	github.com/chromedp/cdproto v0.0.0-20230310204135-a6d692f2c96d

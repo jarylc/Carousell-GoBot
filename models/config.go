@@ -8,6 +8,7 @@ type Config struct {
 	} `yaml:"application"`
 	Carousell struct {
 		Cookie       string  `yaml:"cookie"`
+		Token        string  `yaml:"token"`
 		Username     string  `yaml:"username"`
 		Password     string  `yaml:"password"`
 		PingInterval int16   `yaml:"ping_interval"`
@@ -52,6 +53,7 @@ func DefaultConfig() *Config {
 		},
 		Carousell: struct {
 			Cookie       string  `yaml:"cookie"`
+			Token        string  `yaml:"token"`
 			Username     string  `yaml:"username"`
 			Password     string  `yaml:"password"`
 			PingInterval int16   `yaml:"ping_interval"`

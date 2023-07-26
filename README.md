@@ -102,19 +102,22 @@ $ docker build .
 ```
 
 ## Usage
-### If username and password not specified, get Carousell.sg Cookie
+### If username and password not specified, get Carousell.sg Cookie and Token
 #### Firefox
-1. Go to https://www.carousell.sg/
+1. Go to https://www.carousell.sg/ds/api/1.0/chat/token/?_path=/1.0/chat/token/
 2. Press `CTRL+SHIFT+E` / `⌘+⌥+E`
 3. Refresh the page
 4. ![Firefox Final Step](readme/cookie-firefox.png)
+5. Copy the value of `token` for token as well
 
 #### Chrome
-1. Go to https://www.carousell.sg/
+1. Go to https://www.carousell.sg/ds/api/1.0/chat/token/?_path=/1.0/chat/token/
 2. Press `CTRL+SHIFT+C` / `⌘+⌥+C`
 3. Click on `Network` tab
 4. Refresh the page
 5. ![Chrome Final Step](readme/cookie-chrome.png)
+6. Copy the value of `token` for token as well
+
 ### Commands (prefixed with command_prefix configuration)
 Currently, only your account can send these commands:
 - `sched`/`schedule`/`remind`/`reminder`/`deal` - schedule a deal and set reminders based on reminders configuration
@@ -136,9 +139,10 @@ https://gitlab.com/jarylc/carousell-gobot/-/blob/master/config.sample.yaml
   - `portal_listener` - listen address for front-end
   - `chrome_listener` - listen address for Chrome remote debugger
 - `carousell` - Carousell related configurations
-  - `cookie` - either this or `username` and `password` or both are required, entire value inside Cookie header from above
-  - `username` - either this or `cookie` or both are required, specify username for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
-  - `password` - either this or `cookie` or both are required, specify password for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
+  - `cookie` - either this and `token` or `username` and `password` or both are required, entire value inside Cookie header from above
+  - `token` - either this and `cookie` or `username` and `password` or both are required, retrieved from https://www.carousell.sg/ds/api/1.0/chat/token/?_path=/1.0/chat/token/ after logging in
+  - `username` - either this or `cookie` and `token` or both are required, specify username for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
+  - `password` - either this or `cookie` and `token` or both are required, specify password for automatic session renewal (if Docker, make sure to run with env `INSTALL_CHROME=1`)
   - `ping_interval` - interval to ping Carousell to check connectivity
   - `low_ball` - percentage of price to be considered low-ball in decimal notation
 - `message_templates` - message templates
