@@ -2,10 +2,12 @@ package utils
 
 import (
 	"carousell-gobot/constants"
+	"carousell-gobot/data/config"
 	"context"
 	"encoding/json"
 	"errors"
 	"github.com/chromedp/cdproto/dom"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"github.com/dlclark/regexp2"
 	"github.com/jarylc/go-chromedpproxy"
@@ -27,9 +29,11 @@ func HTTPGet(url string, out interface{}) error {
 		Error    error
 	}
 	ch := make(chan result, 1)
-	println(url)
 	go func() {
 		err = chromedp.Run(ctx, chromedp.Tasks{
+			network.SetExtraHTTPHeaders(map[string]interface{}{
+				"Cookie": config.Config.Carousell.Cookie,
+			}),
 			chromedp.Navigate(url),
 			chromedp.WaitNotPresent(`//div[contains(text(), 'Ray ID')]`),
 			chromedp.WaitVisible(`pre`),
@@ -42,7 +46,6 @@ func HTTPGet(url string, out interface{}) error {
 				if err != nil {
 					return err
 				}
-				println(response)
 				ch <- result{Response: response, Error: nil}
 				return nil
 			}),

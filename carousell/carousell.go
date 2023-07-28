@@ -334,7 +334,6 @@ func login() (string, error) {
 	go func() {
 		err := chromedp.Run(ctx, chromedp.Tasks{
 			chromedp.WaitVisible(`//p[contains(text(), 'Hello,')]/..`, chromedp.NodeVisible),
-			chromedp.Navigate(constants.CAROUSELL_URL_TOKEN),
 			chromedp.ActionFunc(func(ctx context.Context) error {
 				cookies, err := network.GetCookies().WithUrls([]string{"https://www.carousell.sg", "https://carousell.sg"}).Do(ctx)
 				if err != nil {
