@@ -12,8 +12,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/cdproto/dom"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"github.com/dlclark/regexp2"
@@ -22,7 +20,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -210,21 +207,33 @@ func getUserIDFromCacheOrCookie() (string, error) {
 }
 
 func getToken() (string, error) {
-	if config.Config.Carousell.Cookie != "" && config.Config.Carousell.Token != "" {
-		return config.Config.Carousell.Token, nil
-	}
+	var token responses.Token
 	var err error
-	config.Config.Carousell.Cookie, config.Config.Carousell.Token, err = login()
-	if err != nil {
-		return "", err
+
+	if config.Config.Carousell.Cookie != "" {
+		err = utils.HTTPGet(constants.CAROUSELL_URL_TOKEN, &token)
+		if err != nil {
+			return "", err
+		}
 	}
-	return config.Config.Carousell.Token, nil
+	if token.Data.Token == "" {
+		config.Config.Carousell.Cookie, err = login()
+		if err != nil {
+			return "", err
+		}
+		err := utils.HTTPGet(constants.CAROUSELL_URL_TOKEN, &token)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return token.Data.Token, nil
 }
 
 //nolint:funlen
-func login() (string, string, error) {
+func login() (string, error) {
 	if config.Config.Carousell.Username == "" || config.Config.Carousell.Password == "" {
-		return "", "", errors.New("no credentials found")
+		return "", errors.New("no credentials found")
 	}
 	log.Print("attempting to login using credentials...")
 
@@ -234,11 +243,10 @@ func login() (string, string, error) {
 		chromedp.NoSandbox,
 		chromedp.DisableGPU,
 		chromedp.Flag("disable-dev-shm-usage", true),
-		chromedp.UserAgent("Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/113.0"),
 	)
 	targetID, err := chromedpproxy.NewTab("https://www.carousell.sg/login")
 	if err != nil && !errors.Is(err, context.Canceled) {
-		return "", "", err
+		return "", err
 	}
 	defer chromedpproxy.CloseTarget(targetID)
 	ctx := chromedpproxy.GetTarget(targetID)
@@ -253,12 +261,11 @@ func login() (string, string, error) {
 		chromedp.Click(`button[type="submit"]`, chromedp.NodeVisible),
 	})
 	if err != nil && !errors.Is(err, context.Canceled) {
-		return "", "", err
+		return "", err
 	}
 
 	type result struct {
 		Cookie string
-		Token  string
 		Error  error
 	}
 	ch := make(chan result, 1)
@@ -274,7 +281,6 @@ func login() (string, string, error) {
 		if err != nil && !errors.Is(err, context.Canceled) {
 			ch <- result{
 				Cookie: "",
-				Token:  "",
 				Error:  err,
 			}
 		}
@@ -282,21 +288,8 @@ func login() (string, string, error) {
 
 	// reCaptcha is required
 	go func() {
-		// grab reCaptcha frame
-		var iframes []*cdp.Node
 		err = chromedp.Run(ctx, chromedp.Tasks{
-			chromedp.Nodes(`iframe[title="recaptcha challenge expires in two minutes"]`, &iframes),
-		})
-		if err != nil && !errors.Is(err, context.Canceled) {
-			ch <- result{
-				Cookie: "",
-				Token:  "",
-				Error:  err,
-			}
-		}
-
-		err := chromedp.Run(ctx, chromedp.Tasks{
-			chromedp.WaitVisible(`#rc-imageselect`, chromedp.FromNode(iframes[0])),
+			chromedp.WaitVisible(`iframe[title="recaptcha challenge expires in two minutes"]`),
 			chromedp.ActionFunc(func(ctx context.Context) error {
 				if !notified {
 					notified = true
@@ -310,7 +303,6 @@ func login() (string, string, error) {
 		if err != nil && !errors.Is(err, context.Canceled) {
 			ch <- result{
 				Cookie: "",
-				Token:  "",
 				Error:  err,
 			}
 		}
@@ -353,21 +345,8 @@ func login() (string, string, error) {
 					cookieStr += fmt.Sprintf("%s=%s; ", cookie.Name, cookie.Value)
 				}
 
-				node, err := dom.GetDocument().Do(ctx)
-				if err != nil {
-					return err
-				}
-				response, err := dom.GetOuterHTML().WithNodeID(node.NodeID).Do(ctx)
-				if err != nil {
-					return err
-				}
-				re := regexp.MustCompile(`"token":"(.*?)"`)
-				match := re.FindStringSubmatch(response)
-				token := match[1]
-
 				ch <- result{
 					Cookie: cookieStr,
-					Token:  token,
 					Error:  nil,
 				}
 				return nil
@@ -382,5 +361,5 @@ func login() (string, string, error) {
 	}()
 
 	final := <-ch
-	return final.Cookie, final.Token, final.Error
+	return final.Cookie, final.Error
 }

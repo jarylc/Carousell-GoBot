@@ -6,8 +6,8 @@ set -e
 cd /app
 
 if [[ "${INSTALL_CHROME}" -eq 1 ]]; then
-  echo "Installing Chrome..."
-  apk add --no-cache chromium
+  echo "Installing Chrome and xvfb-run..."
+  apk add --no-cache chromium xvfb-run
 fi
 
 getent group cgb >/dev/null || addgroup -g ${GID} cgb

@@ -2,38 +2,64 @@ package utils
 
 import (
 	"carousell-gobot/constants"
-	"carousell-gobot/data/config"
+	"context"
 	"encoding/json"
+	"errors"
+	"github.com/chromedp/cdproto/dom"
+	"github.com/chromedp/chromedp"
 	"github.com/dlclark/regexp2"
-	"io"
-	"net/http"
+	"github.com/jarylc/go-chromedpproxy"
+	"regexp"
 	"strconv"
 	"time"
 )
 
-// HTTP functions
-var client = &http.Client{}
-
 func HTTPGet(url string, out interface{}) error {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
+	targetID, err := chromedpproxy.NewTab("about://newtab")
+	if err != nil && !errors.Is(err, context.Canceled) {
 		return err
 	}
+	defer chromedpproxy.CloseTarget(targetID)
+	ctx := chromedpproxy.GetTarget(targetID)
 
-	req.Header.Set("Cookie", config.Config.Carousell.Cookie)
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
+	type result struct {
+		Response string
+		Error    error
 	}
-	defer resp.Body.Close()
+	ch := make(chan result, 1)
+	println(url)
+	go func() {
+		err = chromedp.Run(ctx, chromedp.Tasks{
+			chromedp.Navigate(url),
+			chromedp.WaitNotPresent(`//div[contains(text(), 'Ray ID')]`),
+			chromedp.WaitVisible(`pre`),
+			chromedp.ActionFunc(func(ctx context.Context) error {
+				node, err := dom.GetDocument().Do(ctx)
+				if err != nil {
+					return err
+				}
+				response, err := dom.GetOuterHTML().WithNodeID(node.NodeID).Do(ctx)
+				if err != nil {
+					return err
+				}
+				println(response)
+				ch <- result{Response: response, Error: nil}
+				return nil
+			}),
+		})
+		if err != nil {
+			ch <- result{Response: "", Error: err}
+		}
+	}()
 
-	raw, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
+	res := <-ch
+	if res.Error != nil {
+		return res.Error
 	}
 
-	err = json.Unmarshal(raw, out)
+	re := regexp.MustCompile(`\{.+}`)
+	resp := re.FindStringSubmatch(res.Response)[0]
+	err = json.Unmarshal([]byte(resp), out)
 	if err != nil {
 		return err
 	}

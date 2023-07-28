@@ -38,7 +38,7 @@ A Carousell.sg automation bot written in Golang
   * [jarylc/go-chrono](https://github.com/jarylc/go-chrono)
       * [wanasit/chrono](https://github.com/wanasit/chrono)
 * [jarylc/go-chromedpproxy](https://github.com/jarylc/go-chromedpproxy)
-
+* [Davincible/chromedp-undetected](https://github.com/Davincible/chromedp-undetected)
 
 ## Getting Started
 To get a local copy up and running follow these simple steps.
