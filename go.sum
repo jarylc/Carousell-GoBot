@@ -68,6 +68,8 @@ github.com/jarylc/go-chromedpproxy v0.1.1 h1:+RMlHqUwgk/IzAf4nzeJAqmNsYsS/5g/ki9
 github.com/jarylc/go-chromedpproxy v0.1.1/go.mod h1:JREJXoNnxzMDqq18EgKy1hWkT1j1N4qpGvAyrXh4Rgo=
 github.com/jarylc/go-chromedpproxy v0.2.0 h1:wBXX2V57cMOeuNCInLn9VUNzHQeHEP+LArAaYFLfmG0=
 github.com/jarylc/go-chromedpproxy v0.2.0/go.mod h1:PyhYGO26UIyeu6Zm0boNBawgsZm6B0wgGN3/2Ujj5Fg=
+github.com/jarylc/go-chromedpproxy v0.2.1 h1:H84HprW/xLCZcUD6+rEYk8YLjsFULk3oXG46BRFJ38Q=
+github.com/jarylc/go-chromedpproxy v0.2.1/go.mod h1:PyhYGO26UIyeu6Zm0boNBawgsZm6B0wgGN3/2Ujj5Fg=
 github.com/jarylc/go-chrono/v2 v2.5.0 h1:PAEKWqTj0N6SC0YrQVE2mjblpPkNdWb8TdpHWnAZ4xE=
 github.com/jarylc/go-chrono/v2 v2.5.0/go.mod h1:UaUJq9yd/BidzM63gTwszWmpviqTwrVza7cQ44i2s2A=
 github.com/jarylc/go-chrono/v2 v2.6.1 h1:xBGGFacOK0TfPxj7HLWzN7iY4u8zzlekH047wopzspo=
